@@ -1,0 +1,148 @@
+@import url("https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,100..900&display=swap");
+
+body {
+    font-family: 'Urbanist', sans-serif;
+    background-color: #F7F8FA;
+    color: #0F172A;
+    margin: 0;
+    padding: 0;
+}
+
+h2{
+    font-family: 'Urbanist', sans-serif;
+    color: #0F172A;
+    font-size: 40px;
+    font-weight: 700;
+    padding: 0;
+    margin: 0;
+}
+
+.normal-text{
+    font-family: 'Urbanist', sans-serif;
+    color: #0F172A;
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.custom-login-wrapper {
+    height: 100vh;
+    display: flex;
+    background-color: white;
+}
+
+.login-left-img {
+    flex: 1;
+    background-color: #000;
+}
+
+.login-left-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.login-form-wrapper {
+    flex: 1;
+    max-width: 500px;
+    margin: auto;
+    background-color: #fff;
+    align-items: center;
+}
+
+.login-form-container {
+    flex: 1;
+    padding: 60px 40px;
+    max-width: 500px;
+    margin: auto;
+    background-color: #fff;
+}
+
+.login-logo img {
+    max-width: 150px;
+    padding-bottom: 40px;
+}
+
+.password-field{
+    padding-top: 30px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    display: flex;
+    height: 46px;
+    flex-direction: column;
+    align-items: flex-start;
+    align-self: stretch;
+    border-radius: 14px 14px 14px 14px;
+    border: 2px solid rgba(0, 0, 0, 0.05);
+    color: rgba(0, 0, 0, 0.60);
+    font-family: Urbanist;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px;
+    padding-left: 15px;
+}
+
+.btn-primary {
+    width: 100%;
+    height: 50px;
+    background-color: #1E60FF;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 32px;
+    font-weight: 600;
+    font-size: 16px;
+}
+.btn-primary:hover {
+    background-color: #174dcc;
+}
+
+.remember-me-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 44px;
+    line-height: 44px;
+}
+
+.remember-me-checkbox {
+    display: flex;
+    align-items: center;
+}
+.remember-me-checkbox input[type="checkbox"] {
+    width: 14px;
+    height: 14px;
+    margin-right: 10px;
+}
+
+.remember-me-checkbox-label {
+    font-family: Urbanist;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px;
+    color: #9D9D9D;
+}
+
+a {
+    font-family: Urbanist;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px;
+    color: #1E60FF;
+    text-decoration: none;
+}
+
+p{
+    font-family: Urbanist !important;
+    font-size: 14px !important;
+    font-style: normal !important;
+    font-weight: 400 !important;
+    line-height: 18px !important;
+    color: #9D9D9D !important;
+}

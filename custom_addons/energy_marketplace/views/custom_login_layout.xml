@@ -1,0 +1,14 @@
+<odoo>
+  <template id="custom_login_layout_override" inherit_id="web.login_layout" priority="100">
+    <!-- Replace the root <t t-call="web.html_container"> with your stripped version -->
+    <xpath expr="/t" position="replace">
+      <t>
+        <t t-set="title" t-value="'PWRD Login'"/>
+        <t t-call-assets="web.assets_login" t-js="false"/>
+        <t t-set="html_classes" t-value="'o_web_client'"/>
+        <t t-set="body_classname" t-value="'o_web_client'"/>
+        <t t-raw="0"/>
+      </t>
+    </xpath>
+  </template>
+</odoo>

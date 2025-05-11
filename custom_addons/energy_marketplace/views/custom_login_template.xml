@@ -1,0 +1,41 @@
+<odoo>
+  <template id="custom_login_page_inherit" inherit_id="web.login" priority="16">
+    <!-- Replace everything inside the login_layout call -->
+    <xpath expr="//t[@t-call='web.login_layout']" position="replace">
+      <t t-call="web.login_layout">
+        <t t-set="html_classes" t-value="'o_web_client custom-login-page'"/>
+        <t t-set="body_classname" t-value="'o_web_client'"/>
+
+        <div class="custom-login-wrapper d-flex">
+          <div class="login-left-img">
+            <img src="/energy_marketplace/static/src/img/login_bg.jpg" alt="Background" />
+          </div>
+          <div class="login-form-wrapper d-flex align-items-center justify-content-center">
+            <div class="login-form-container">
+              <div class="login-logo mb-4 text-center">
+                <img src="/energy_marketplace/static/src/img/pwrd_logo.svg" alt="PWRD Logo" />
+              </div>
+              <h2 class="text-center">Welcome Back!</h2>
+              <p class="normal-text text-center">Please login to your account</p>
+              <form action="/web/login" method="post">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+                <div class="form-group mb-3">
+                  <input type="email" name="login" class="form-control" placeholder="Email" required="1"/>
+                </div>
+                <div class="form-group mb-3 mt-2 password-field">
+                  <input type="password" name="password" class="form-control" placeholder="Password" required="1"/>
+                </div>
+                <div class="remember-me-wrapper d-flex justify-content-between align-items-center mb-3">
+                  <label class="remember-me-checkbox remember-me-checkbox-label"><input class="remember-me-checkbox" type="checkbox" name="remember" /> Remember me</label>
+                  <a href="/web/reset_password" class="small">Forgot password?</a>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block w-100">Login</button>
+              </form>
+              <p class="text-center mt-3">Don’t have an account? <a href="/register/step1">Register now</a></p>
+            </div>
+          </div>
+        </div>
+      </t>
+    </xpath>
+  </template>
+</odoo>

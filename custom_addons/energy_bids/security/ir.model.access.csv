@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_energy_bid_admin,Access Energy Bid,model_energy_bid,base.group_system,1,1,1,1
+access_energy_bid_portal,Access Energy Bid Portal,model_energy_bid,base.group_portal,1,0,0,0
+access_supplier_bid_user,supplier.bid: user,model_supplier_bid,base.group_user,1,0,1,0
+access_supplier_bid_admin,supplier.bid: admin,model_supplier_bid,base.group_system,1,1,1,1
+access_supplier_bid,Access Supplier Bid,model_supplier_bid,base.group_user,1,0,1,0
+access_energy_company_user,Access Energy Company,model_energy_company,base.group_user,1,0,0,0

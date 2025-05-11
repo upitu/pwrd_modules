@@ -1,0 +1,302 @@
+<odoo>
+    <template id="assets_marketplace_styles" inherit_id="portal.frontend_layout" name="Marketplace Custom Styles">
+        <xpath expr="." position="inside">
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"/>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+            <style>
+                .card {
+                    border-radius: 14px !important;
+                    padding: 20px !important;
+                }
+
+                h5,
+                .form-label,
+                .form-check-label,
+                .form-check-input {
+                    color: #707070 !important;
+                }
+
+                .form-check-label {
+                    font-weight: 500;
+                }
+
+                .card-upper {
+                    box-shadow: 0px 3px 20px rgba(0, 0, 0, 0.05) !important;
+                    height: 174px !important;
+                    padding: 15px;
+                    border-radius: 14px;
+                    margin-bottom: 15px;
+                }
+
+                .card-bids {
+                    border-radius: 14px !important;
+                    padding: 0px !important;
+                    background-color: #ffffff !important;
+                }
+
+                .card-bottom {
+                    padding: 15px;
+                    box-shadow: 0px 0px 0px rgba(0, 0, 0, 0) !important;
+                }
+
+                .learn-more {
+                    height: 2.5rem;
+                    line-height: 2.5rem;
+                    width: 8rem;
+                    color: #1170f0 !important;
+                    background-color: #ffffff !important;
+                    border: 1px solid #1170f0 !important;
+                }
+
+                .learn-more:hover {
+                    color: #ffffff !important;
+                    background-color: #1170f0 !important;
+                    border: 1px solid #ffffff !important;
+                }
+
+                .bid-button {
+                    height: 2.5rem !important;
+                    width: 8rem !important;
+                    color: #ffffff !important;
+                    background-color: #1170f0 !important;
+                    text-decoration: none !important;
+                    border-radius: 8px !important;
+                    text-align: center !important;
+                    font-size: 0.875rem !important;
+                    line-height: 2.5rem !important;
+                }
+
+                .bid-button:hover {
+                    color: #1170f0 !important;
+                    background-color: #ffffff !important;
+                    border: 1px solid #1170f0 !important;
+                }
+
+                .btn.disabled {
+                    height: 2.5rem !important;
+                    width: 8rem !important;
+                }
+
+                .login-bid {
+                    height: 2.5rem;
+                    width: 8rem;
+                    color: #ffffff !important;
+                    background-color: #1170f0 !important;
+                }
+
+                .login-bid:hover {
+                    color: #1170f0 !important;
+                    background-color: #ffffff !important;
+                    border: 1px solid #1170f0 !important;
+                }
+
+                .bid-submit-button {
+                    height: 2.5rem !important;
+                    width: 36rem !important;
+                    color: #ffffff !important;
+                    background-color: #1170f0 !important;
+                    text-decoration: none !important;
+                    border-radius: 8px !important;
+                    text-align: center !important;
+                    font-size: 0.875rem !important;
+                }
+
+                .bid-submit-button:hover {
+                    color: #1170f0 !important;
+                    background-color: #ffffff !important;
+                    border: 1px solid #1170f0 !important;
+                }
+
+                .text-xs {
+                    font-size: 0.75rem;
+                }
+
+                .border-blue-thin {
+                    border: 1px solid #1170f0 !important;
+                }
+
+                .border-blue-medium {
+                    border: 2px solid #1170f0 !important;
+                }
+
+                .border-blue-thick {
+                    border: 3px solid #1170f0 !important;
+                }
+
+                .custom-modal {
+                    max-width: 40rem !important;
+                }
+
+                /* Toast styles */
+                .toast-container {
+                    z-index: 1080;
+                }
+
+                .toast-brand-success {
+                    background-color: #1170f0 !important;
+                    color: white !important;
+                    border-radius: 8px;
+                    font-size: 0.875rem;
+                }
+
+                .toast-brand-error {
+                    background-color: #dc3545 !important;
+                    color: white !important;
+                    border-radius: 8px;
+                    font-size: 0.875rem;
+                }
+
+                .toast .btn-close {
+                    filter: invert(1);
+                }
+            </style>
+
+            <script type="text/javascript">
+                document.addEventListener('DOMContentLoaded', function () {
+
+                    // 🔔 Toast utility
+                    function showToast(message, type = 'success') {
+                        const toastContainer = document.getElementById('toast-container') || (() => {
+                            const container = document.createElement('div');
+                            container.id = 'toast-container';
+                            container.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+                            document.body.appendChild(container);
+                            return container;
+                        })();
+
+                        const toast = document.createElement('div');
+                        const toastClass = type === 'error' ? 'toast-brand-error' : 'toast-brand-success';
+                        const icon = type === 'error'
+                            ? '<i class="me-2 bi bi-x-circle-fill"></i>'
+                            : '<i class="me-2 bi bi-check-circle-fill"></i>';
+
+                        toast.className = `toast align-items-center ${toastClass} border-0 shadow`;
+                        toast.setAttribute('role', 'alert');
+                        toast.setAttribute('aria-live', 'assertive');
+                        toast.setAttribute('aria-atomic', 'true');
+                        toast.innerHTML = `
+                            <div class="d-flex">
+                                <div class="toast-body">${icon}${message}</div>
+                                <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                            </div>
+                        `;
+                        toastContainer.appendChild(toast);
+                        const bsToast = new bootstrap.Toast(toast);
+                        bsToast.show();
+
+                        setTimeout(() => toast.remove(), 4000);
+                    }
+
+                    // 🔍 Modal 1 — Bid Details
+                    const bidDetailsModal = document.getElementById('bidDetailsModal');
+                    const bidDetailsContent = bidDetailsModal?.querySelector('#bid-details-content');
+
+                    if (bidDetailsModal &amp;&amp; bidDetailsContent) {
+                        bidDetailsModal.addEventListener('show.bs.modal', function (event) {
+                            const trigger = event.relatedTarget;
+                            const url = trigger?.getAttribute('data-url');
+                            if (!url) return;
+
+                            bidDetailsContent.innerHTML = '<div class="text-center py-5"><span class="spinner-border text-primary"></span></div>';
+
+                            fetch(url)
+                                .then(res => res.text())
+                                .then(html => {
+                                    bidDetailsContent.innerHTML = html;
+                                })
+                                .catch(err => {
+                                    bidDetailsContent.innerHTML = '<div class="alert alert-danger">Failed to load bid details.</div>';
+                                    console.error(err);
+                                });
+                        });
+                    }
+
+                    // 📝 Modal 2 — Submit Bid
+                    const bidSubmitModal = document.getElementById('bidSubmitModal');
+                    const bidSubmitContent = bidSubmitModal?.querySelector('#bidModalContent');
+
+                    if (bidSubmitModal &amp;&amp; bidSubmitContent) {
+                        bidSubmitModal.addEventListener('show.bs.modal', function (event) {
+                            const trigger = event.relatedTarget;
+                            const url = trigger?.getAttribute('data-url');
+                            if (!url) return;
+
+                            bidSubmitContent.innerHTML = '<div class="text-center py-5"><span class="spinner-border text-primary"></span></div>';
+
+                            fetch(url)
+                                .then(res => res.text())
+                                .then(html => {
+                                    bidSubmitContent.innerHTML = html;
+
+                                    const form = bidSubmitContent.querySelector('#supplier-bid-form');
+                                    if (!form) return;
+
+                                    let errorMsgEl = form.querySelector('.error-message');
+                                    if (!errorMsgEl) {
+                                        errorMsgEl = document.createElement('div');
+                                        errorMsgEl.className = 'alert alert-danger mt-3 error-message';
+                                        errorMsgEl.style.display = 'none';
+                                        form.appendChild(errorMsgEl);
+                                    }
+
+                                    const submitBtn = form.querySelector('button[type="submit"]');
+                                    if (!submitBtn) return;
+
+                                    if (window._submitBidHandler) {
+                                        form.removeEventListener('submit', window._submitBidHandler);
+                                    }
+
+                                    window._submitBidHandler = function (e) {
+                                        e.preventDefault();
+                                        submitBtn.disabled = true;
+
+                                        const postUrl = form.dataset.url || form.getAttribute('action');
+                                        const formData = new FormData(form);
+
+                                        fetch(postUrl, {
+                                            method: 'POST',
+                                            body: formData
+                                        })
+                                            .then(res => {
+                                                const ct = res.headers.get('content-type');
+                                                if (ct &amp;&amp; ct.includes('application/json')) {
+                                                    return res.json();
+                                                } else {
+                                                    throw new Error('Invalid JSON response');
+                                                }
+                                            })
+                                            .then(data => {
+                                                if (data.success) {
+                                                    showToast(data.message, 'success');
+                                                    bootstrap.Modal.getInstance(bidSubmitModal).hide();
+                                                    setTimeout(() => window.location.reload(), 1500);
+                                                } else {
+                                                    showToast(data.error || 'Submission failed.', 'error');
+                                                    errorMsgEl.textContent = data.error || 'Submission failed.';
+                                                    errorMsgEl.style.display = 'block';
+                                                }
+                                            })
+                                            .catch(err => {
+                                                console.error("🔥 Submit failed", err);
+                                                showToast('Unexpected error. Please try again.', 'error');
+                                                errorMsgEl.textContent = 'Unexpected error. Please try again.';
+                                                errorMsgEl.style.display = 'block';
+                                            })
+                                            .finally(() => {
+                                                submitBtn.disabled = false;
+                                            });
+                                    };
+
+                                    form.addEventListener('submit', window._submitBidHandler);
+                                })
+                                .catch(err => {
+                                    bidSubmitContent.innerHTML = '<div class="alert alert-danger">Failed to load bid form.</div>';
+                                    console.error("🔥 Failed to load modal HTML", err);
+                                });
+                        });
+                    }
+                });
+                </script>
+        </xpath>
+    </template>
+</odoo>

@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_energy_company_admin,Access Energy Company Admin,model_energy_company_profile,base.group_system,1,1,1,1
+access_energy_company_portal,Access Energy Company Portal,model_energy_company_profile,base.group_portal,1,0,1,0
+access_energy_supplier_general,General Energy Supplier Access,model_energy_company_profile,,1,1,1,1
+access_free_domain_user,Free Domain,model_energy_marketplace_free_domain,,1,1,1,1

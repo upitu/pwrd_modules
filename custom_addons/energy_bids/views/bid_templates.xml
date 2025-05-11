@@ -1,0 +1,202 @@
+<odoo>
+
+  <!-- Shared Layout Template -->
+  <template id="bids_layout" name="Bids Layout">
+    <t t-name="energy_bids.bids_layout">
+      <html>
+        <head>
+          <t t-call-assets="web.assets_frontend"/>
+          <t t-set="title">Bids - PWRD</t>
+        </head>
+        <body class="bg-light" style="margin: 0;">
+          <div class="bids-bg" style="padding-bottom: 25px;">
+            <div style="max-width: 1340px; margin: auto; padding: 0;">
+              <t t-raw="0"/>
+            </div>
+          </div>
+        </body>
+      </html>
+    </t>
+  </template>
+
+  <!-- Main Page: User not approved -->
+  <template id="portal_bids_not_approved" name="Not Approved Yet">
+    <t t-call="energy_bids.bids_layout">
+      <div class="container mt-5 mb-5 text-center">
+        <h2 class="fw-bold mb-3">Approval Pending</h2>
+        <p class="text-muted">Your account is still pending admin approval. You will be able to create bids once your company is approved.</p>
+        <a href="/my/bids" class="btn btn-primary mt-3">Back to My Requests</a>
+      </div>
+    </t>
+  </template>
+
+  <!-- Main Page: My Bids -->
+  <template id="portal_bids" name="My Bids">
+    <t t-call="energy_bids.bids_layout">
+      <div class="container mt-5 mb-5">
+        <t t-if="not bids">
+          <div class="text-center py-5" style="background: #F9F9F9; border-radius: 20px;">
+            <h5>No Requests</h5>
+            <t t-if="company.is_approved">
+              <p class="text-muted">You haven't created any requests. Start by clicking the button below to create one!</p>
+            </t>
+            <t t-if="not company.is_approved">
+              <p class="text-muted">Your account is still pending admin approval. You will be able to create bids once your company is approved.</p>
+            </t>
+            <t t-if="company.is_approved">
+              <a href="/my/bids/create" class="btn btn-primary">Create Request</a>
+            </t>
+          </div>
+        </t>
+        <t t-if="bids">
+          <h4>My Requests</h4>
+          <t t-call="energy_bids.portal_bids_list"/>
+        </t>
+      </div>
+    </t>
+  </template>
+
+  <!-- Table of Bids -->
+  <template id="portal_bids_list" name="My Bids List">
+    <div class="container py-5">
+      <div class="card-create-bid px-4 py-5" style="max-width: 1340px; margin: auto; margin-top: 2rem;">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle">
+            <thead class="thead-top">
+              <tr>
+                <th class="th-top">Energy Type</th>
+                <th class="th-top">Volume</th>
+                <th class="th-top">Location</th>
+                <th class="th-top">Payment</th>
+                <th class="th-top">Supply Date</th>
+                <th class="th-top">Status</th>
+                <th class="th-top text-end"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <t t-foreach="bids" t-as="bid">
+                <tr>
+                  <td class="th-body"><t t-esc="bid.energy_type"/></td>
+                  <td class="th-body"><t t-esc="bid.volume_requested"/> L</td>
+                  <td class="th-body"><t t-esc="bid.location"/></td>
+                  <td class="th-body"><t t-esc="bid.payment_type"/></td>
+                  <td class="th-body"><t t-esc="bid.supply_date.strftime('%Y-%m-%d')"/></td>
+                  <td class="th-body">
+                    <span t-if="bid.status == 'pending'" class="badge bg-warning text-dark">Pending</span>
+                    <span t-if="bid.status == 'delivered'" class="badge bg-success">Delivered</span>
+                    <span t-if="bid.status == 'rejected'" class="badge bg-danger">Rejected</span>
+                    <span t-if="bid.status == 'cancelled'" class="badge bg-secondary">Cancelled</span>
+                  </td>
+                  <td class="text-end d-flex justify-content-end gap-2">
+                    <t t-if="bid.status == 'pending'">
+                      <a t-att-href="'/my/bids/%s/cancel' % bid.id" class="btn-bids-cancel">Cancel Request</a>
+                    </t>
+                    <t t-elif="bid.status == 'delivered'">
+                      <a class="btn-bids-cancel disabled" style="pointer-events: none;">Cancel Request</a>
+                    </t>
+                    <t t-elif="bid.status == 'cancelled'">
+                      <a class="btn-bids-cancel disabled" style="pointer-events: none;">Cancel Request</a>
+                    </t>
+                    <a t-att-href="'/my/bids/%s' % bid.id" class="btn-bids-submit">View</a>
+                  </td>
+                </tr>
+              </t>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <!-- Bid Creation -->
+  <template id="portal_bids_create" name="Create Bid">
+    <t t-call="energy_bids.bids_layout">
+      <div class="container py-5">
+        <div class="px-4 py-5" style="max-width: 1340px; margin: auto;">
+          <h4>New Request</h4>
+            <div class="card-create-bid">
+  <h4 class="mb-3">Fill in the form</h4>
+  <p class="text-muted mb-4">Provide the necessary details to create a new request.</p>
+
+  <form method="POST" action="/my/bids/create">
+    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+
+    <div class="row g-4">
+      <!-- Left Column -->
+      <div class="col-md-6">
+        <label class="form-label">Energy Type</label>
+        <select name="energy_type" class="form-control" required="1">
+          <option value="diesel">Diesel</option>
+          <option value="petrol">Petrol</option>
+          <option value="gas">Natural Gas</option>
+        </select>
+
+        <label class="form-label mt-3">Location</label>
+        <input type="text" name="location" placeholder="Location" class="form-control" required="1"/>
+
+        <label class="form-label mt-3">Supply Date</label>
+        <input type="date" name="supply_date" class="form-control" required="1"/>
+
+        <label class="form-label mt-3">Frequency</label>
+        <select name="frequency" class="form-control" required="1">
+          <option value="once">One-Time</option>
+          <option value="weekly">Weekly</option>
+          <option value="monthly">Monthly</option>
+        </select>
+      </div>
+
+      <!-- Right Column -->
+      <div class="col-md-6">
+        <label class="form-label">Volume Requested</label>
+        <input type="text" name="volume_requested" placeholder="Volume (L)" class="form-control" required="1"/>
+
+        <label class="form-label mt-3">Payment Type</label>
+        <select name="payment_type" class="form-control" required="1">
+          <option value="cash">Cash</option>
+          <option value="card">Card</option>
+          <option value="cheque">Cheque</option>
+          <option value="bank_transfer">Bank Transfer</option>
+        </select>
+
+        <label class="form-label mt-3">Preferred Hours</label>
+        <select name="preferred_hours" class="form-control" required="1">
+          <option value="morning">8 AM – 12 PM</option>
+          <option value="afternoon">12 PM – 5 PM</option>
+          <option value="evening">5 PM – 9 PM</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Bottom Buttons -->
+    <div class="d-flex justify-content-between mt-5">
+      <a href="/my/bids" class="btn-cancel-bids">Cancel</a>
+      <button type="submit" class="btn-continue">Create</button>
+    </div>
+  </form>
+</div>
+        </div>
+      </div>
+    </t>
+  </template>
+
+  <!-- View Bid Details -->
+  <template id="portal_bids_view" name="View Bid">
+    <div class="container mt-5 mb-5">
+      <h2 class="mb-4">Bid Details</h2>
+      <table class="table table-bordered">
+        <tbody>
+          <tr><th>Energy Type</th><td><t t-esc="bid.energy_type"/></td></tr>
+          <tr><th>Volume</th><td><t t-esc="bid.volume_requested"/> L</td></tr>
+          <tr><th>Location</th><td><t t-esc="bid.location"/></td></tr>
+          <tr><th>Payment</th><td><t t-esc="bid.payment_type"/></td></tr>
+          <tr><th>Supply Date</th><td><t t-esc="bid.supply_date.strftime('%Y-%m-%d')"/></td></tr>
+          <tr><th>Preferred Hours</th><td><t t-esc="bid.preferred_hours"/></td></tr>
+          <tr><th>Frequency</th><td><t t-esc="bid.frequency"/></td></tr>
+          <tr><th>Status</th><td><t t-esc="bid.status"/></td></tr>
+        </tbody>
+      </table>
+      <a href="/my/bids" class="btn btn-secondary mt-3">Back to My Requests</a>
+    </div>
+  </template>
+
+</odoo>

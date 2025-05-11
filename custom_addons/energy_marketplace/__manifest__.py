@@ -1,0 +1,41 @@
+
+{
+    'name': 'Energy Marketplace',
+    'version': '1.0',
+    'category': 'Website',
+    'summary': 'Multi-step company registration for energy marketplace',
+    'license': 'LGPL-3',
+    'author': 'Elias El Hajj',
+    "website": 'https://www.digitaljunkies.ae',
+    'depends': ['base', 'website', 'portal', 'auth_signup', 'mail', 'energy_bids'],
+    'data': [
+        'security/security.xml',
+        'security/ir.model.access.csv',
+        'views/free_domain_views.xml',
+        'views/company_templates.xml',
+        'views/portal_templates.xml',
+        'views/company_admin_form.xml',
+        'views/supplier_admin_form.xml',
+        'views/custom_login_template.xml',
+        'views/custom_login_layout.xml',
+        'views/assets.xml',
+        'views/bids_marketplace_template.xml',
+        'views/portal_templates_inherit.xml',
+        'views/portal_my_account_strip.xml',
+        'views/bid_details_modal_partial.xml',
+        'views/bid_submit_modal_partial.xml',
+        'views/company_model.xml',
+    ],
+    'assets': {
+        'web.assets_frontend': [
+            'energy_marketplace/static/src/css/registration_full.css',
+            'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css',
+            'energy_marketplace/static/src/js/pwrd.js',
+        ],
+        'web.assets_login': [
+            'energy_marketplace/static/src/css/custom_styling.css',
+        ],
+    },
+    'installable': True,
+    'application': True,
+}

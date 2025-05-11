@@ -1,0 +1,434 @@
+<odoo>
+    <template id="registration_step1" name="Registration Step 1">
+        <t t-call="energy_marketplace.registration_layout">
+            <t t-set="active_step" t-value="1"/>
+            <t t-set="title">Let's get started</t>
+
+            <div class="container py-5">
+                <form method="POST" action="/register/step1">
+                    <div class="card px-4 py-5 shadow-sm" style="max-width: 1350px; margin: auto;">
+                        <h4 class="mb-4 fw-bold">Let's get started</h4>
+                        <div class="d-flex gap-3 mb-4">
+                            <input type="hidden" name="user_type" id="user_type" value="company"/>
+                            <button type="button" class="btn btn-outline-primary user-type-btn active" data-type="company">Customer</button>
+                            <button type="button" class="btn btn-outline-primary user-type-btn" data-type="supplier">Supplier</button>
+                        </div>
+                        <p class="text-danger text-center" t-if="error"><t t-esc="error"/></p>
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                        <div class="container">
+                            <div class="row g-3">
+                                <div class="col-12 col-md-4">
+                                    <input type="text" name="full_name" class="form-control" placeholder="Full name *" required="1"/>
+                                </div>
+                                <div class="col-12 col-md-4 email-wrapper position-relative">
+                                    <input type="email" name="email" class="form-control" placeholder="Email (business only) *" required="1"/>
+                                    <div class="email-spinner" style="display: none; position: absolute; top: 50%; right: 10px; transform: translateY(-50%);">
+                                        <span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true"></span>
+                                    </div>
+                                    <p id="email-error" class="email-feedback text-danger text-center mt-1 col-md-12 col-12" style="display: none;"></p>
+                                </div>
+                            </div>
+
+                            <div class="row g-3 mt-2">
+                                <div class="position-relative col-12 col-md-4">
+                                    <input type="password" name="password" id="password" class="form-control password-input" placeholder="Password *" required="1"/>
+                                    <i class="fa fa-eye password-toggle" onclick="togglePasswordVisibility('password', this)"></i>
+                                </div>
+                                <div class="position-relative col-12 col-md-4">
+                                    <input type="password" name="confirm_password" id="confirm_password" class="form-control password-input" placeholder="Confirm Password *" required="1"/>
+                                    <i class="fa fa-eye password-toggle" onclick="togglePasswordVisibility('confirm_password', this)"></i>
+                                </div>
+                                <p id="password-error" class="text-danger text-center mt-2 col-md-8 col-12" style="display: none;"></p>
+                            </div>
+
+                            <div class="row g-3 mt-2">
+                                <div class="col-12 col-md-4">
+                                    <input type="text" name="phone_number" class="form-control" placeholder="Phone number"/>
+                                </div>
+                                <div class="col-12 col-md-4">
+                                    <input type="text" name="position" class="form-control" placeholder="Position"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-bottom d-flex justify-content-between align-items-center flex-wrap">
+                        <div class="login-text mb-2 mb-md-0">
+                            Already have an account? <a href="/web/login">Log in</a>
+                        </div>
+                        <button type="submit" class="btn-continue" disabled="disabled">Continue</button>
+                    </div>
+                </form>
+            </div>
+        </t>
+    </template>
+
+    <template id="registration_step2" name="Step 2 - Company Info">
+        <t t-call="energy_marketplace.registration_layout">
+        <t t-set="active_step" t-value="2"/>
+            <div class="container py-5">
+                <form method="POST" action="/register/step2">
+                    <div class="card px-4 py-5 shadow-sm" style="max-width: 1320px; margin: auto;">
+                        <h4 class="mb-4 fw-bold">Company Informations</h4>
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <div class="row g-3">
+                            <div class="col-12 col-md-4">
+                                <input type="text" name="company_name" placeholder="Company name *" class="form-control" required="1"/>
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <select id="emirate-select" name="emirate" class="form-control" required="1">
+                                    <option value="AD">Abu Dhabi</option>
+                                    <option value="DU">Dubai</option>
+                                    <option value="SH">Sharjah</option>
+                                    <option value="AJ">Ajman</option>
+                                    <option value="UAQ">Umm Al Quwain</option>
+                                    <option value="RAK">Ras Al Khaimah</option>
+                                    <option value="FU">Fujairah</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row g-3 mt-2">
+                            <div class="col-12 col-md-4">
+                                <select name="company_type" class="form-control">
+                                    <option value="retail">Retail</option>
+                                    <option value="wholesale">Wholesale</option>
+                                    <option value="government">Government</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <select name="country_code" class="form-control" disabled="disabled">
+                                    <option value="AE" selected="selected">United Arab Emirates</option>
+                                </select>
+                                <input type="hidden" name="country_name" t-att-value="uae.name"/>
+                                <input type="hidden" name="country_id" t-att-value="uae.id"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-bottom">
+                        <button type="button" class="btn-cancel" onclick="window.location.href='/'">Cancel</button>
+                        <button type="submit" class="btn-continue" disabled="disabled">Continue</button>
+                    </div>
+                </form>
+            </div>
+
+            <t t-js="1">
+                <!-- Include Select2 Assets -->
+                <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
+                <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+                <!-- Initialize Select2 and validation logic -->
+                <script>
+                $(document).ready(function () {
+                    console.log("Document ready");
+                    const $emirateSelect = $('#emirate-select');
+                    const $continueButton = $('.btn-continue');
+                    const $requiredInputs = $('input[required="1"], select[required="1"]').not('#emirate-select');
+
+                    $emirateSelect.select2({
+                        placeholder: "Select Emirates",
+                        width: '100%'
+                    });
+
+                    function validateForm() {
+                        let isValid = true;
+
+                        // Check other inputs
+                        $requiredInputs.each(function () {
+                            const val = $(this).val();
+                            if (!val || val.trim() === '') {
+                                isValid = false;
+                            }
+                        });
+
+                        // Check emirates multi-select
+                        const emiratesSelected = $emirateSelect.val();
+                        if (!emiratesSelected || emiratesSelected.length === 0) {
+                            isValid = false;
+                        }
+
+                        // Debug output
+                        console.log("Valid form?", isValid, "| Emirates:", emiratesSelected);
+
+                        // Toggle button
+                        if (isValid) {
+                            $continueButton.removeAttr('disabled');
+                        } else {
+                            $continueButton.attr('disabled', 'disabled');
+                        }
+                    }
+
+                    // Initial check
+                    validateForm();
+
+                    // On input for text fields
+                    $requiredInputs.on('input change', validateForm);
+
+                    // On emirate select change
+                    $emirateSelect.on('change', function () {
+                        validateForm();
+
+                        const selected = $(this).val();
+                        if (selected &amp;&amp; selected.length > 0) {
+                            $('.select2-selection').css({
+                                borderColor: '#00B69B',
+                                boxShadow: '0 0 0 1px #00B69B'
+                            });
+                        } else {
+                            $('.select2-selection').css({
+                                borderColor: '#ced4da',
+                                boxShadow: 'none'
+                            });
+                        }
+                    });
+                });
+                </script>
+            </t>
+        </t>
+    </template>
+
+    <template id="registration_step3" name="Step 3 - Energy Info">
+        <t t-call="energy_marketplace.registration_layout">
+        <t t-set="active_step" t-value="3"/>
+            <div class="container py-5">
+                <form method="POST" action="/register/step3">
+                    <div class="card px-4 py-5 shadow-sm" style="max-width: 1320px; margin: auto;">
+                        <h4 class="mb-4 fw-bold">Energy Information</h4>
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <div class="row g-3">
+                            <div class="col-12 col-md-4">
+                                <input type="number" step="any" name="volume_required" placeholder="Volume required" class="form-control number-input"/>
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <select name="frequency" class="form-control mb-2">
+                                    <option value="daily">Daily</option>
+                                    <option value="weekly">Weekly</option>
+                                    <option value="monthly">Monthly</option>
+                                    <option value="yearly">Yearly</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row g-3 mt-2">
+                            <div class="col-12 col-md-4">
+                                <input type="text" name="delivery_location" placeholder="Delivery location" class="form-control"/>
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <input type="number" step="any" name="storage_capacity" placeholder="Storage capacity (L)" class="form-control number-input"/>
+                            </div>
+                        </div>
+                        <div class="row g-3 mt-2">
+                            <div class="col-12 col-md-4">
+                                <input type="text" name="current_supplier" placeholder="Current supplier" class="form-control"/>
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <input type="text" name="specific_grade" placeholder="Specific grade required" class="form-control"/>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div class="card-bottom d-flex justify-content-between align-items-center flex-wrap">
+                        <button type="button" class="btn-cancel" onclick="window.location.href='/'">Cancel</button>
+                        <button type="submit" class="btn-continue">Continue</button>
+                    </div>
+                </form>
+            </div>
+        </t>
+    </template>
+
+    <template id="registration_step4" name="Step 4 - Upload Documents">
+        <t t-call="energy_marketplace.registration_layout">
+        <t t-set="active_step" t-value="4"/>
+            <div class="container py-5">
+                <form method="POST" action="/register/step4" enctype="multipart/form-data">
+                    <div class="card px-4 py-5 shadow-sm" style="max-width: 1320px; margin: auto;">
+                        <h4 class="mb-4 fw-bold">Documents Upload</h4>
+                        <p class="text-danger" t-if="error"><t t-esc="error"/></p>
+                            <div class="row g-3">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <div class="col-md-6">
+                                    <label>Trade License (PDF/DOC/DOCX)</label>
+                                    <input type="file" name="trade_license" accept=".pdf,.doc,.docx" class="form-control mb-3" required="1"/>
+                                </div>
+                                <div class="col-md-6">
+                                    <label>VAT Registration (optional)</label>
+                                    <input type="file" name="vat_registration" accept=".pdf,.doc,.docx" class="form-control mb-3"/>
+                                </div>
+                            </div>
+                    </div>
+                    <div class="card-bottom">
+                        <button type="button" class="btn-cancel" onclick="window.location.href='/'">Cancel</button>
+                        <button type="submit" class="btn-continue" disabled="disabled">Continue</button>
+                    </div>
+                </form>
+            </div>
+        </t>
+    </template>
+
+    <template id="registration_review" name="Step 5 - Review and Submit">
+        <t t-call="energy_marketplace.registration_layout">
+        <t t-set="active_step" t-value="5"/>
+            <div class="container py-5">
+                <form method="POST" action="/register/review">
+                    <div class="card px-4 py-5 shadow-sm" style="max-width: 1320px; margin: auto;">
+                        <h4>Review</h4>
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <div class="row">
+                                <div class="col-md-6 info_box">
+                                    <h4>Personal Information</h4>
+                                    <p>Name</p>
+                                    <p class="last"><t t-esc="values.get('full_name')"/></p>
+                                    
+                                    <p>Email</p>
+                                    <p class="last"><t t-esc="values.get('email')"/></p>
+                                    
+                                    <p>Phone</p>
+                                    <p class="last"><t t-esc="values.get('phone_number')"/></p>
+                                    
+                                    <p>Position</p>
+                                    <p class="last"><t t-esc="values.get('position')"/></p>
+                                </div>
+                                <div class="col-md-6 info_box">
+                                    <h4>Company Info</h4>
+                                    <p>Company</p>
+                                    <p class="last"><t t-esc="values.get('company_name')"/></p>
+                                    
+                                    <p>Emirate</p>
+                                    <p class="last"><t t-esc="values.get('emirate')"/></p>
+                                    
+                                    <p>Type</p>
+                                    <p class="last"><t t-esc="values.get('company_type')"/></p>
+                                    
+                                    <p>Country</p>
+                                    <p class="last"><t t-esc="values.get('country_name')"/></p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 info_box">
+                                    <h4>Energy Information</h4>
+                                    <p>Volume</p>
+                                    <p class="last"><t t-esc="values.get('volume_required')"/></p>
+                                    
+                                    <p>Frequency</p>
+                                    <p class="last"><t t-esc="values.get('frequency')"/></p>
+                                    
+                                    <p>Location</p>
+                                    <p class="last"><t t-esc="values.get('delivery_location')"/></p>
+                                    
+                                    <p>Capacity</p>
+                                    <p class="last"><t t-esc="values.get('storage_capacity')"/></p>
+                                    
+                                    <p>Supplier</p>
+                                    <p class="last"><t t-esc="values.get('current_supplier')"/></p>
+                                    
+                                    <p>Grade</p>
+                                    <p class="last"><t t-esc="values.get('specific_grade')"/></p>
+                                </div>
+                                <div class="col-md-6 info_box">
+                                    <h4>Documents</h4>
+                                    <p>Trade License</p>
+                                    <p class="last"><t t-esc="values.get('trade_license_filename')"/></p>
+                                    
+                                    <p>VAT Registration</p>
+                                    <p class="last"><t t-esc="values.get('vat_registration_filename')"/></p>
+                                </div>
+                            </div>
+                    </div>
+                    <div class="card-bottom">
+                        <button type="button" class="btn-cancel" onclick="window.location.href='/'">Cancel</button>
+                        <button type="submit" class="btn-continue">Continue</button>
+                    </div>
+                </form>
+            </div>
+        </t>
+    </template>
+
+    <template id="registration_pending" name="Registration Pending Approval">
+        <t t-call="energy_marketplace.registration_layout">
+            <div class="card px-4 py-5 shadow-sm" style="max-width: 1320px; margin: auto; border-radius: 0 0 24px 24px !important;">
+                <h4>Thank you for registering!</h4>
+                <p>Your account is pending admin approval. You will be notified once it is activated.</p>
+            </div>
+        </t>
+    </template>
+
+    <template id="minimal_registration_layout" name="Minimal Layout">
+        <t t-name="energy_marketplace.minimal_registration_layout">
+            <html>
+            <head>
+                <t t-call-assets="web.assets_frontend"/>
+                <t t-set="title">Register</t>
+            </head>
+            <body class="bg-light">
+                <t t-raw="0"/>
+            </body>
+            </html>
+        </t>
+    </template>
+
+    <template id="registration_layout" name="Registration Layout">
+        <t t-name="energy_marketplace.registration_layout">
+            <html>
+            <head>
+                <t t-call-assets="web.assets_frontend"/>
+                <t t-set="title">Registration - PWRD</t>
+            </head>
+            <body t-attf-class="bg-light #{'review-scroll-page' if active_step == 5 else ''}" style="margin: 0;">
+
+                <!-- Top bar -->
+                <div class="top-bar">
+                    <div class="top-bar-inner">
+                        <div>
+                            <a href="/" class="back-link"><img src="/energy_marketplace/static/src/img/arrow_left.png" alt="Back" /></a>
+                            <img src="/energy_marketplace/static/src/img/pwrd_logo_white.svg" alt="Logo" class="logo" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stepper bar -->
+                <div class="stepper-bg" style="padding-top: 35px; padding-bottom: 25px;">
+                    <div class="card" style="max-width: 1320px; margin: auto; box-shadow: none; padding: 0;">
+                        <div class="stepper">
+                            <div class="step" t-attf-class="step #{'active' if active_step == 1 else ''}">
+                                <div class="step-circle">1</div>
+                                <div class="step-label">Let's get started</div>
+                            </div>
+                            <div class="step" t-attf-class="step #{'active' if active_step == 2 else ''}">
+                                <div class="step-circle">2</div>
+                                <div class="step-label">Company</div>
+                            </div>
+                            <div class="step" t-attf-class="step #{'active' if active_step == 3 else ''}">
+                                <div class="step-circle">3</div>
+                                <div class="step-label">Energy Info</div>
+                            </div>
+                            <div class="step" t-attf-class="step #{'active' if active_step == 4 else ''}">
+                                <div class="step-circle">4</div>
+                                <div class="step-label">Documents</div>
+                            </div>
+                            <div class="step" t-attf-class="step #{'active' if active_step == 5 else ''}">
+                                <div class="step-circle">5</div>
+                                <div class="step-label">Review</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Step content -->
+                <t t-out="0"/>
+                <script>
+                    function togglePasswordVisibility(fieldId, icon) {
+                        const input = document.getElementById(fieldId);
+                        if (input.type === 'password') {
+                            input.type = 'text';
+                            icon.classList.remove('fa-eye');
+                            icon.classList.add('fa-eye-slash', 'active');
+                        } else {
+                            input.type = 'password';
+                            icon.classList.remove('fa-eye-slash', 'active');
+                            icon.classList.add('fa-eye');
+                        }
+                    }
+                </script>
+            </body>
+            </html>
+        </t>
+    </template>
+</odoo>

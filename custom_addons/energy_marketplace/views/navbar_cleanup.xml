@@ -1,0 +1,12 @@
+<odoo>
+    <template id="custom_nav_cleanup" inherit_id="website.layout">
+        <!-- 🧹 Remove 'Shop' -->
+        <xpath expr="//a[span[text()='Shop']]" position="replace"/>
+        <!-- 🧹 Remove 'Services' -->
+        <xpath expr="//a[span[text()='Services']]" position="replace"/>
+        <!-- 🧹 Remove 'About Us' -->
+        <xpath expr="//a[span[text()='About Us']]" position="replace"/>
+        <!-- 🧹 Remove 'Contact us' -->
+        <xpath expr="//a[span[text()='Contact us']]" position="replace"/>
+    </template>
+</odoo>

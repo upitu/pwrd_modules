@@ -1,0 +1,463 @@
+@import url("https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,100..900&display=swap");
+
+body {
+    font-family: 'Urbanist', sans-serif !important;
+    background-color: #F7F8FA;
+    margin: 0;
+    color: #0F172A;
+    overflow: hidden;
+}
+
+h4{
+    font-weight: 600;
+    font-family: 'Urbanist', sans-serif !important;
+}
+
+h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6{
+    font-family: 'Urbanist', sans-serif !important;
+}
+
+.top-bar {
+    font-family: 'Urbanist', sans-serif !important;
+    padding: 16px 0;
+    display: flex;
+    justify-content: center;
+}
+
+.top-bar-inner {
+    font-family: 'Urbanist', sans-serif !important;
+    width: 100%;
+    max-width: 1280px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 24px;
+    height: 64px;
+    background: #2C2E32;
+    border-radius: 10px;
+}
+
+.back-link {
+    font-family: 'Urbanist', sans-serif !important;
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.logo {
+    height: 32px;
+    padding-left: 10px;
+}
+
+.lang-button {
+    font-family: 'Urbanist', sans-serif !important;
+    background: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+/* Stepper background wrapper */
+.bids-bg {
+    font-family: 'Urbanist', sans-serif !important;
+    margin: 35px auto 0 auto;
+    max-width: 1340px;
+    width: 1340px;
+    padding: 35px 20px 0 20px;
+}
+
+/* Stepper content */
+.bids {
+    font-family: 'Urbanist', sans-serif !important;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #F4F4F4 !important;
+    position: relative;
+    padding: 0 10px;
+}
+
+/* Individual steps */
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    position: relative;
+}
+
+/* Connecting line between steps */
+.step:not(:last-child)::after {
+    font-family: 'Urbanist', sans-serif !important;
+    content: '';
+    position: absolute;
+    top: 15px;
+    right: -50%;
+    width: 100%;
+    height: 2px;
+    background-color: #E1E3E9;
+    z-index: 0;
+}
+
+/* Step circle */
+.step-circle {
+    font-family: 'Urbanist', sans-serif !important;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #E1E3E9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
+    margin-bottom: 6px;
+    z-index: 1;
+}
+
+.step.active .step-circle {
+    font-family: 'Urbanist', sans-serif !important;
+    background-color: #1E60FF;
+    color: white;
+}
+
+/* Step label text */
+.step-label {
+    font-family: 'Urbanist', sans-serif !important;
+    font-size: 12px;
+    font-weight: 500;
+    color: #2C2E32;
+}
+
+.step.active .step-label {
+    font-family: 'Urbanist', sans-serif !important;
+    color: #1E60FF;
+}
+
+.container{
+    font-family: 'Urbanist', sans-serif !important;
+    padding-top: 2rem !important;
+}
+
+/* Card wrapper */
+.card {
+    font-family: 'Urbanist', sans-serif !important;
+    background-color: #fff;
+    border-radius: 24px 24px 24px 24px !important;
+    box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.05) !important;
+    padding: 40px;
+    max-width: 1340px;
+    margin: auto;
+    --card-border-width: none 0px;
+}
+
+.card-create-bid {
+    font-family: 'Urbanist', sans-serif !important;
+    background-color: #fff;
+    border-radius: 24px 24px 24px 24px !important;
+    box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.05) !important;
+    padding: 40px;
+    max-width: 1340px;
+    margin: auto;
+    --card-border-width: none 0px;
+    margin-top: 2rem;
+}
+
+/* Form elements */
+input.form-control {
+    border-radius: 12px;
+    border: 1px solid #ccc;
+    padding: 14px 18px;
+    width: 100%;
+    font-size: 15px;
+}
+
+/* Button */
+.btn-primary {
+    font-family: 'Urbanist', sans-serif !important;
+    background-color: #1E60FF;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 32px;
+    font-weight: 600;
+    font-size: 16px;
+}
+.btn-primary:hover {
+    font-family: 'Urbanist', sans-serif !important;
+    background-color: #174dcc;
+}
+
+/* Bottom bar (login + continue) */
+.bottom-bar {
+    font-family: 'Urbanist', sans-serif !important;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+    padding: 1.5rem 2rem;
+    border-top: 1px solid #eee;
+    box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.08);
+    border-radius: 0 0 24px 24px;
+}
+.bottom-bar a {
+    font-family: 'Urbanist', sans-serif !important;
+    color: #1E60FF;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.card-bottom {
+    font-family: 'Urbanist', sans-serif !important;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+    padding-top: 20px;
+    background: #fff;
+}
+
+/* "Already have an account?" and Log in */
+.login-text {
+    font-family: 'Urbanist', sans-serif !important;
+    font-size: 14px;
+    color: #9D9D9D;
+}
+.login-text a {
+    font-family: 'Urbanist', sans-serif !important;
+    color: #1170F0;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.btn-primary{
+    font-family: 'Urbanist', sans-serif !important;
+    background-color: #1E60FF;
+    color: white;
+    border-style: solid;
+    border-width: 2px;
+    border-color: #1E60FF;
+    padding: 12px 32px;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.btn-primary:hover {
+    font-family: 'Urbanist', sans-serif !important;
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 12px;
+    border-color: #1E60FF;
+    background-color: white !important;
+    color: #1E60FF;
+    padding: 12px 32px;
+}
+
+/* Continue button styles */
+.btn-continue {
+    font-family: 'Urbanist', sans-serif !important;
+    width: 150px;
+    height: 50px;
+    border-radius: 10px;
+    font-weight: 600;
+    border: none;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Disabled state */
+.btn-continue[disabled] {
+    font-family: 'Urbanist', sans-serif !important;
+    background: #E0E0E0;
+    color: #1D1B20;
+    cursor: not-allowed;
+}
+
+/* Enabled state */
+.btn-continue:not([disabled]) {
+    font-family: 'Urbanist', sans-serif !important;
+    background-color: #1170F0;
+    color: #FFFFFF;
+    cursor: pointer;
+}
+
+.btn-cancel{
+    font-family: 'Urbanist', sans-serif !important;
+    background-color: #FFF;
+    color: #1170F0;
+    border: 1px solid #1170F0;
+    cursor: pointer;
+    width: 150px;
+    height: 50px;
+    border-radius: 10px;
+    font-weight: normal;
+}
+
+input.form-control:focus,
+select.form-control:focus,
+textarea.form-control:focus {
+    font-family: 'Urbanist', sans-serif !important;
+    outline: none;
+    box-shadow: none;
+    border-color: #ccc; /* or any neutral border color */
+    background-color: inherit;
+}
+
+select.form-control {
+    font-family: 'Urbanist', sans-serif !important;
+    height: 50px;                 /* Match your input height */
+    padding: 12px 16px;           /* Match padding */
+    border-radius: 12px;          /* Match rounded corners */
+    font-size: 16px;              /* Match text */
+    appearance: none;             /* Optional: Remove default arrow for custom UI */
+}
+
+select.form-control {
+    font-family: 'Urbanist', sans-serif !important;
+    background-image: url('/energy_bids/static/src/img/chevron-down.svg'); */
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    background-size: 16px;
+}
+
+.info_box{
+    font-family: 'Urbanist', sans-serif !important;
+    background: #FAFAFA;
+    border-radius: 10px;
+    padding: 15px;
+    margin: 2%;
+    width: 45.5% !important;
+}
+
+.info_box h4{
+    font-family: 'Urbanist', sans-serif !important;
+    font-size: 16px;
+    font-weight: 600;
+    color: #1E60FF;
+}
+
+.info_box p{
+    font-family: 'Urbanist', sans-serif !important;
+    font-size: 14px;
+    color: #8B8C8E;
+    padding: 0;
+    margin: 0;
+}
+
+.info_box .last{
+    font-family: 'Urbanist', sans-serif !important;
+    font-size: 14px;
+    color: #1D1B20;
+    padding-bottom: 5px !important;
+    padding: 0;
+    margin: 0;
+}
+
+.thead-top{
+    font-family: 'Urbanist', sans-serif !important;
+    background-color: #FFF;
+}
+
+.th-top{
+    font-family: 'Urbanist', sans-serif !important;
+    color: #707070 !important;
+    font-size: 14px;
+    border-style: none;
+}
+
+.th-body{
+    font-family: 'Urbanist', sans-serif !important;
+    font-size: 18px;
+    color: #323439;
+}
+
+.th-body::first-letter {
+    font-family: 'Urbanist', sans-serif !important;
+    text-transform: uppercase;
+}
+
+.bg-warning{
+    font-family: 'Urbanist', sans-serif !important;
+    background-color: rgba(255, 180, 0, 0.1) !important;
+    color: #FFB400 !important;
+    border-width: 0 !important;
+}
+
+.bg-success{
+    font-family: 'Urbanist', sans-serif !important;
+    background-color: rgba(182, 155, 10, 0.1) !important;
+    color: #00B69B !important;
+    border-width: 0 !important;
+}
+
+.bg-danger{
+    font-family: 'Urbanist', sans-serif !important;
+    background-color: rgba(249, 60, 101, 0.1) !important;
+    color: #F93C65 !important;
+    border-width: 0 !important;
+}
+
+.bg-secondary{
+    font-family: 'Urbanist', sans-serif !important;
+    background-color: rgba(249, 60, 101, 0.1) !important;
+    color: #F93C65 !important;
+    border-width: 0 !important;
+}
+
+.btn-bids-cancel {
+    font-family: 'Urbanist', sans-serif !important;
+    background-color: #FFF;
+    color: #F93C65;
+    border: 1px solid #F93C65;
+    width: 150px;
+    height: 50px;
+    border-radius: 10px;
+    font-weight: 500;
+    font-size: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    transition: background 0.2s ease;
+  }
+  
+  .btn-bids-submit {
+    font-family: 'Urbanist', sans-serif !important;
+    background-color: #FFF;
+    color: #1170F0;
+    border: 1px solid #1170F0;
+    width: 150px;
+    height: 50px;
+    border-radius: 10px;
+    font-weight: 500;
+    font-size: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    transition: background 0.2s ease;
+  }
+  
+  .btn-bids-cancel.disabled {
+    font-family: 'Urbanist', sans-serif !important;
+    opacity: 0.5;
+    border-style: dashed;
+    cursor: not-allowed;
+    color: #F93C65;
+    border-color: #F93C65;
+  }
+
+.btn-cancel-bids {
+    font-family: 'Urbanist', sans-serif !important;
+    background-color: #FFF;
+    color: #1170F0;
+    border: 1px solid #1170F0;
+    width: 150px;
+    height: 50px;
+    border-radius: 10px;
+    font-weight: 500;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 0;
+  }

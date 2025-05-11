@@ -1,0 +1,31 @@
+<odoo>
+    <template id="bid_details_modal_partial" name="Bid Details Modal Partial">
+        <div class="container-fluid py-3">
+            <h4 class="fw-bold mb-2">Bid Details</h4>
+            <p class="text-muted mb-3">You will find below the request details</p>
+
+            <div class="bg-light px-3 py-2 rounded mb-3" style="width: fit-content;">
+                <span class="text-muted small">Company</span>
+                <div class="fw-semibold fs-5" t-esc="bid.company_id.company_name"/>
+            </div>
+
+            <div class="border rounded shadow-sm p-3 bg-white">
+                <div class="row g-3">
+                    <div class="col-md-6"><div class="form-control bg-light">Energy Type: <t t-esc="bid.energy_type.title()"/></div></div>
+                    <div class="col-md-6"><div class="form-control bg-light">Preferred Hours: <t t-esc="bid.preferred_hours.title()"/></div></div>
+                    <div class="col-md-6"><div class="form-control bg-light">Volume: <t t-esc="'{:,}'.format(int(bid.volume_requested))"/>L</div></div>
+                    <div class="col-md-6"><div class="form-control bg-light">Frequency: <t t-esc="bid.frequency.title()"/></div></div>
+                    <div class="col-md-6"><div class="form-control bg-light">Supply Date: <t t-esc="bid.supply_date.strftime('%d–%b–%Y')"/></div></div>
+                    <div class="col-md-6"><div class="form-control bg-light">Payment Type: <t t-esc="bid.payment_type.title()"/></div></div>
+                    <div class="col-md-6"><div class="form-control bg-light">Location: <t t-esc="bid.location.name"/></div></div>
+                </div>
+
+                <div class="text-center mt-4">
+                    <button type="button" class="btn btn-primary px-5 py-2" data-bs-dismiss="modal">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </template>
+</odoo>

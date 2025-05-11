@@ -1,0 +1,49 @@
+<odoo>
+    <template id="custom_energy_navbar" inherit_id="website.layout">
+        <!-- 🔁 Replace the navbar block -->
+        <xpath expr="//header" position="replace">
+            <header id="top">
+                <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm py-2">
+                    <div class="container">
+                        <!-- Logo -->
+                        <a class="navbar-brand" href="/">
+                            <img src="/energy_marketplace/static/src/img/pwrd_logo.svg" alt="Logo" height="40"/>
+                        </a>
+
+                        <!-- Navbar toggler -->
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+
+                        <!-- Navbar links -->
+                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                                <li class="nav-item"><a class="nav-link" href="/bids_marketplace">Marketplace</a></li>
+                                <li class="nav-item"><a class="nav-link" href="/my/bids">My Bids</a></li>
+                                <li class="nav-item"><a class="nav-link" href="/my/dashboard">Supplier Dashboard</a></li>
+                                <li class="nav-item"><a class="nav-link" href="/contactus">Contact</a></li>
+                            </ul>
+
+                            <!-- User Info -->
+                            <ul class="navbar-nav ms-auto">
+                                <t t-if="request.website.is_user()">
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/my/account">
+                                            <t t-esc="request.env.user.name"/>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/web/session/logout">Logout</a>
+                                    </li>
+                                </t>
+                                <t t-else="">
+                                    <li class="nav-item"><a class="nav-link" href="/web/login">Login</a></li>
+                                </t>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+            </header>
+        </xpath>
+    </template>
+</odoo>

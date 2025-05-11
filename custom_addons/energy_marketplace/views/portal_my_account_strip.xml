@@ -1,0 +1,6 @@
+<odoo>
+    <template id="custom_portal_my_account_fields" inherit_id="account.portal_my_details_fields" name="Remove fields from My Account">
+        <xpath expr="//label[contains(text(), 'Receive invoices')]/.." position="replace"/>
+        <xpath expr="//label[contains(text(), 'Electronic format')]/.." position="replace"/>
+    </template>
+</odoo>

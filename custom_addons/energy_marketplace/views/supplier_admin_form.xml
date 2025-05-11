@@ -1,0 +1,116 @@
+<odoo>
+  <data>
+    <!-- List View -->
+    <record id="view_supplier_list" model="ir.ui.view">
+      <field name="name">energy.company.list</field>
+      <field name="model">energy.company</field>
+      <field name="type">list</field>
+      <field name="arch" type="xml">
+        <list string="Suppliers">
+          <field name="company_name"/>
+          <field name="email"/>
+          <field name="phone_number"/>
+          <field name="position"/>
+          <field name="emirate"/>
+          <field name="company_type"/>
+          <field name="country_id"/>
+          <field name="volume_required"/>
+          <field name="frequency"/>
+          <field name="delivery_location"/>
+          <field name="storage_capacity"/>
+          <field name="current_supplier"/>
+          <field name="specific_grade"/>
+          <field name="is_approved" widget="boolean_toggle"/>
+          <field name="user_id"/>
+          <field name="trade_license_attachment" widget="binary" filename="trade_license_filename"/>
+          <field name="vat_registration_attachment" widget="binary" filename="vat_registration_filename"/>
+        </list>
+      </field>
+    </record>
+
+    <!-- Kanban View -->
+    <record id="view_supplier_kanban" model="ir.ui.view">
+      <field name="name">energy.company.kanban</field>
+      <field name="model">energy.company</field>
+      <field name="type">kanban</field>
+      <field name="arch" type="xml">
+        <kanban class="o_kanban_small_column">
+          <templates>
+            <t t-name="kanban-box">
+              <div class="o_kanban_record">
+                <div class="o_kanban_record_body">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <strong><field name="company_name"/></strong>
+                    <span t-if="record.is_approved.raw_value" class="badge badge-success">Approved</span>
+                    <span t-if="not record.is_approved.raw_value" class="badge badge-danger">Pending</span>
+                  </div>
+                  <div><field name="email"/></div>
+                  <div><field name="phone_number"/></div>
+                  <div><field name="emirate"/></div>
+                  <div><field name="company_type"/></div>
+                </div>
+              </div>
+            </t>
+          </templates>
+        </kanban>
+      </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_supplier_form" model="ir.ui.view">
+      <field name="name">energy.company.form</field>
+      <field name="model">energy.company</field>
+      <field name="type">form</field>
+      <field name="arch" type="xml">
+        <form string="Supplier Profile">
+          <sheet>
+
+            <group string="Supplier Info">
+              <field name="company_name"/>
+              <field name="email"/>
+              <field name="phone_number"/>
+              <field name="position"/>
+              <field name="emirate"/>
+              <field name="company_type"/>
+              <field name="country_id"/>
+            </group>
+
+            <group string="Energy Info">
+              <field name="volume_required"/>
+              <field name="frequency"/>
+              <field name="delivery_location"/>
+              <field name="storage_capacity"/>
+              <field name="current_supplier"/>
+              <field name="specific_grade"/>
+            </group>
+
+            <group string="Licensing Info">
+              <field name="trade_license_attachment" filename="trade_license_filename" widget="binary"/>
+              <field name="vat_registration_attachment" filename="vat_registration_filename" widget="binary"/>
+            </group>
+
+            <group string="Approval Info">
+              <field name="is_approved"/>
+              <field name="user_id"/>
+            </group>
+
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_supplier_list" model="ir.actions.act_window">
+      <field name="name">Suppliers</field>
+      <field name="res_model">energy.company</field>
+      <field name="view_mode">kanban,list,form</field>
+      <field name="view_id" ref="view_supplier_list"/>
+      <field name="domain">[('user_type', '=', 'supplier')]</field>
+    </record>
+
+    <!-- Menu -->
+    <menuitem id="menu_energy_root" name="Energy Marketplace" parent="base.menu_administration" sequence="10"/>
+    <menuitem id="menu_energy_supplier" name="Suppliers" parent="menu_energy_root" action="action_supplier_list"/>
+
+  </data>
+</odoo>
