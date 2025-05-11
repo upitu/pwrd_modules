@@ -67,3 +67,10 @@ class EnergyBid(models.Model):
     def get_base_url(self):
         self.ensure_one()
         return self.env['ir.config_parameter'].sudo().get_param('web.base.url') or 'http://localhost:8069'
+    
+    def approve_supplier_bid(self, supplier_bid_id):
+        self.ensure_one()
+        bid = self.env['supplier.bid'].browse(supplier_bid_id)
+        if bid.bid_id.id != self.id:
+            raise ValueError("Supplier bid does not belong to this bid request.")
+        bid.write({'status': 'approved'})

@@ -10,7 +10,8 @@
         "views/supplier_bid_model.xml",
         "views/company_model.xml",
         "views/bid_templates.xml",
-        "views/email_template.xml"
+        "views/email_template.xml",
+        "views/portal_supplier_bids_template.xml",
     ],
     "assets": {
         "web.assets_frontend": [

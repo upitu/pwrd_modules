@@ -1,0 +1,115 @@
+<odoo>
+    <data>
+        <template id="portal_supplier_bids_template" name="My Submitted Bids">
+            <t t-call="website.layout">
+                <div class="container my-5">
+                    <h3 class="mb-4">My Bids</h3>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <!-- <th>Request ID</th> -->
+                                <th>Company</th>
+                                <th>Energy Type</th>
+                                <th>Volume</th>
+                                <th>Location</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Submitted</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="supplier_bids" t-as="bid">
+                                <tr>
+                                    <!-- <td><t t-esc="bid.bid_id.id"/></td> -->
+                                    <td><t t-esc="bid.bid_id.company_id.company_name"/></td>
+                                    <td><t t-esc="bid.bid_id.energy_type.title()"/></td>
+                                    <td><t t-esc="'{:,}'.format(int(bid.bid_id.volume_requested))"/> L</td>
+                                    <td><t t-esc="bid.bid_id.location.name"/></td>
+                                    <td><t t-esc="'AED {:.2f}'.format(bid.amount)"/></td>
+                                    <td>
+                                        <span t-if="bid.status == 'approved'" class="badge bg-success">Approved</span>
+                                        <span t-if="bid.status == 'pending'" class="badge bg-warning text-dark">Pending</span>
+                                        <span t-if="bid.status == 'rejected'" class="badge bg-danger">Rejected</span>
+                                        <span t-if="bid.status == 'submitted'" class="submitted badge bg-secondary">Submitted</span>
+                                    </td>
+                                    <td><t t-esc="bid.submitted_at.strftime('%d %b %Y, %H:%M')"/></td>
+                                    <td><button type="submit" name="Pay" class="submit-button" disabled="disabled">Pay</button></td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+                <style>
+                    .submitted{
+                        background-color: #F5EADB !important;
+                        color: #F29434 !important;
+                    }
+                    table{
+                        background-color: #FFFFFF;
+                        border-radius: 14px;
+                    }
+                    tr{
+                        border-radius: 14px !important;
+                    }
+                    th{
+                        color: #707070 !important;
+                        font-weight: 500;
+                        font-size: 14px;
+                    }
+                    thead th{
+                        border-bottom: 0px none !important;
+                    }
+                    tbody:last-child {
+                        border-bottom: 0px none !important;
+                        border-style: none !important;
+                    }
+                    tbody:not(:last-child) {
+                        border-bottom: 1px solid #707070 !important;
+                    }
+                    tbody tr:last-child {
+                        border-bottom: 0px none !important;
+                        border-style: none !important;
+                    }
+                    tbody tr:not(:last-child) {
+                        border-bottom: 1px solid #707070 !important;
+                    }
+                    table{
+                        border-bottom-width: 0px none !important;
+                        border-style: none !important;
+                    }
+                    td{
+                        border-bottom-width: 0px none !important;
+                        border-style: none !important;
+                        vertical-align: middle !important;
+                    }
+                    .submit-button{
+                        height: 2.5rem !important;
+                        width: 5rem !important;
+                        color: #ffffff !important;
+                        background-color: #1170f0 !important;
+                        text-decoration: none !important;
+                        border-radius: 8px !important;
+                        text-align: center !important;
+                        font-size: 0.875rem !important;
+                        border: 0 !important;
+                        cursor: pointer;
+                    }
+
+                    .submit-button:hover{
+                        color: #1170f0 !important;
+                        background-color: #ffffff !important;
+                        border: 1px solid #1170f0 !important;
+                        cursor: pointer;
+                    }
+                    .submit-button[disabled]{
+                        color: #FFFFFF !important;
+                        background-color:rgb(112, 112, 112) !important;
+                        border: 1px solid rgb(112, 112, 112) !important;
+                        cursor: pointer;
+                    }
+                </style>
+            </t>
+        </template>
+    </data>
+</odoo>
