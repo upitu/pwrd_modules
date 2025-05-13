@@ -1,7 +1,9 @@
 <odoo>
+
     <record id="model_supplier_bid" model="ir.model">
         <field name="name">supplier.bid</field>
         <field name="model">supplier.bid</field>
         <field name="state">base</field>
     </record>
+
 </odoo>

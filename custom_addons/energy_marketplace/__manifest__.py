@@ -18,7 +18,6 @@
         'views/supplier_admin_form.xml',
         'views/custom_login_template.xml',
         'views/custom_login_layout.xml',
-        'views/assets.xml',
         'views/bids_marketplace_template.xml',
         'views/portal_templates_inherit.xml',
         'views/portal_my_account_strip.xml',

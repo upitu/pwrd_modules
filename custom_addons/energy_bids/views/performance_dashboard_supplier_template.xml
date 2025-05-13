@@ -1,0 +1,317 @@
+<odoo>
+    <template id="performance_dashboard_supplier_template" name="Supplier Performance Dashboard">
+    <t t-call="energy_bids.bids_layout">
+        <div class="container my-5">
+            <h4 class="mb-4">Supplier Performance</h4>
+
+            <!-- 🔹 Top KPIs -->
+            <div class="row mb-4 text-center">
+                <div class="col">
+                    <div class="round-border-20 card p-3">
+                        <span class="performance-title">Wins</span>
+                        <div class="d-flex justify-content-center align-items-center gap-2">
+                            <h4 class="mb-0" t-esc="bids_won"/>
+                            <t t-if="wins_change &gt; 0">
+                                <i class="bi bi-arrow-up-circle-fill text-success arrow-animate-up" title="Improved"></i>
+                            </t>
+                            <t t-elif="wins_change &lt; 0">
+                                <i class="bi bi-arrow-down-circle-fill text-danger arrow-animate-down" title="Dropped"></i>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="round-border-20 card p-3">
+                        <span class="performance-title">Losses</span>
+                        <div class="d-flex justify-content-center align-items-center gap-2">
+                            <h4 class="mb-0" t-esc="this_month_losses"/>
+                            <t t-if="losses_change &gt;= 0">
+                                <i class="bi bi-arrow-down-circle-fill text-success arrow-animate-down" title="Dropped"></i>
+                            </t>
+                            <t t-elif="wins_change &lt; 0">
+                                <i class="bi bi-arrow-up-circle-fill text-danger arrow-animate-up" title="Improved"></i>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="round-border-20 card p-3 text-center">
+                        <span class="performance-title">Total Bids</span>
+                        <div class="d-flex justify-content-center align-items-center gap-2">
+                            <h4 class="mb-0" t-esc="bids_this_month"/>
+                            <t t-if="bids_total_change &gt;= 0">
+                                <i class="bi bi-arrow-up-circle-fill text-success arrow-animate-up" title="Improved"></i>
+                            </t>
+                            <t t-elif="bids_total_change &lt; 0">
+                                <i class="bi bi-arrow-down-circle-fill text-danger arrow-animate-down" title="Dropped"></i>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 🔸 Middle Charts -->
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="round-border-20 card p-3" style="height: 397px;">
+                        <h5>Market Bids</h5>
+                        <canvas id="energyTypeChart" style="width: 100%; height: 340px;"></canvas>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="round-border-20 card p-3 h-100" style="height: 397px !important;">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="mb-0">Suppliers Bids Won</h5>
+                        </div>
+                        <t t-foreach="ranking_data[:5]" t-as="item">
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <div class="d-flex align-items-center">
+                                    <img src="/energy_marketplace/static/src/img/marketplace_placeholder.png"
+                                        alt="Avatar" width="32" height="32" class="rounded-circle me-3"/>
+                                    <span class="fw-medium" t-esc="item['label'] or 'PWRD Client'"/>
+                                </div>
+                                <span class="text-muted small" t-esc="str(item['volume_requested']) + ' L'"/>
+                                <span class="text-muted small" t-esc="str(item['supplier_bid_count']) + (' Bid' if item['supplier_bid_count'] == 1 else ' Bids')"/>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="round-border-20 card p-3" style="height: 397px;">
+                        <h5>Bids per Location</h5>
+                        <ul class="ul-locations">
+                            <t t-foreach="bids_by_location" t-as="loc">
+                            <li class="li-locations"><t t-esc="loc['location'][1]"/>: <t t-esc="loc['volume_requested'] or 0"/> L</li>
+                            </t>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 🔻 Bottom Table -->
+            <div class="round-border-20 card p-4">
+            <h5>All Your Submitted Bids</h5>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Bid Request</th>
+                    <th>Volume</th>
+                    <th>Emirate</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                <t t-foreach="supplier_bids" t-as="bd">
+                    <tr>
+                    <td><t t-esc="'Request #%s' % bd.bid_id.id"/></td>
+                    <td><t t-esc="bd.bid_id.volume_requested"/> L</td>
+                    <td><t t-esc="bd.bid_id.location.name"/></td>
+                    <td>
+                        <span t-if="bd.status == 'approved'" class="badge bg-success">Approved</span>
+                        <span t-elif="bd.status == 'rejected'" class="badge bg-danger">Rejected</span>
+                        <span t-else="" class="badge bg-warning text-dark">Pending</span>
+                    </td>
+                    </tr>
+                </t>
+                </tbody>
+            </table>
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const emirateData = JSON.parse('<t t-esc="json.dumps(bids_by_emirate)" />');
+
+                const ctx = document.getElementById('bidsByEmirateChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                    labels: emirateData.map(e => e.label),
+                    datasets: [{
+                        label: 'Bids Volume',
+                        data: emirateData.map(e => e.volume),
+                        backgroundColor: '#1170f0'
+                    }]
+                    },
+                    options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'Volume (L)' }
+                        },
+                        x: {
+                        title: { display: true, text: 'Emirate' }
+                        }
+                    }
+                    }
+                });
+
+                document.querySelectorAll('.bi-arrow-up-circle-fill').forEach(el => {
+                    el.classList.remove('arrow-animate-up');
+                    void el.offsetWidth;  // trigger reflow
+                    el.classList.add('arrow-animate-up');
+                });
+
+                const marketBreakdown = JSON.parse('<t t-esc="json.dumps(market_bid_breakdown)" />');
+
+                // 🔹 Market Bids Breakdown (Total, Cash, Credit, Cheque, Bank Transfer)
+                const marketChartEl = document.getElementById('energyTypeChart');
+                if (marketChartEl) {
+                    const ctx = marketChartEl.getContext('2d');
+                    const labels = Object.keys(marketBreakdown);
+                    const values = Object.values(marketBreakdown);
+
+                    if (ctx) {
+                        new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    label: 'Number of Bids',
+                                    data: values,
+                                    backgroundColor: [
+                                        '#1170f0',
+                                        '#28a745',
+                                        '#ffc107',
+                                        '#6f42c1',
+                                        '#20c997'
+                                    ]
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        title: {
+                                            display: true,
+                                            text: 'Number of Bids'
+                                        }
+                                    },
+                                    x: {
+                                        title: {
+                                            display: true,
+                                            text: 'Payment Method'
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        </script>
+        </t>
+    </template>
+
+    <!-- Shared Layout Template -->
+    <template id="bids_layout" name="Bids Layout">
+        <t t-name="energy_bids.bids_layout">
+        <html>
+            <head>
+            <t t-call-assets="web.assets_frontend"/>
+            <t t-set="title">Supplier Performance - PWRD</t>
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"/>
+            </head>
+            <body class="bg-light" style="margin: 0;">
+                <!-- Custom Header Start -->
+                <header class="custom-header p-3">
+                <div class="container">
+                    <div class="row align-items-center">
+                        <!-- Logo -->
+                        <div class="col-auto">
+                            <a href="/my/home">
+                                <img src="/energy_bids/static/src/img/logo_small.svg" alt="PWRD Dashboard" style="height: 40px;"/>
+                            </a>
+                        </div>
+
+                        <!-- Navigation -->
+                        <div class="col text-center">
+                            <nav class="nav nav-pills gap-3 justify-content-center">
+                                <a class="nav-link px-3 py-1 rounded"
+                                t-attf-class="nav-link px-3 py-1 rounded {{ 'bg-white fw-bold' if request.httprequest.path == '/my/home' else 'text-muted' }}"
+                                href="/my/home">Dashboard</a>
+
+                                <a class="nav-link px-3 py-1 rounded"
+                                t-attf-class="nav-link px-3 py-1 rounded {{ 'bg-white fw-bold' if request.httprequest.path == '/bids/marketplace' else 'text-muted' }}"
+                                href="/bids/marketplace">Marketplace</a>
+
+                                <a class="nav-link px-3 py-1 rounded"
+                                    t-attf-class="nav-link px-3 py-1 rounded {{ 'bg-white fw-bold' if request.httprequest.path == '/my/supplier-performance' else 'text-muted' }}"
+                                    href="/my/supplier-performance">Performance</a>
+
+                                <t t-if="request.env.user.user_type == 'company'">
+                                    <a class="nav-link px-3 py-1 rounded"
+                                    t-attf-class="nav-link px-3 py-1 rounded {{ 'bg-white fw-bold' if request.httprequest.path == '/my/bids' else 'text-muted' }}"
+                                    href="/my/bids">My Bids</a>
+                                </t>
+
+                                <t t-if="request.env.user.user_type == 'supplier'">
+                                    <a class="nav-link px-3 py-1 rounded"
+                                    t-attf-class="nav-link px-3 py-1 rounded {{ 'bg-white fw-bold' if request.httprequest.path == '/my/supplier-bids' else 'text-muted' }}"
+                                    href="/my/supplier-bids">My Bids</a>
+                                </t>
+                            </nav>
+                        </div>
+
+                        <!-- Sign-in info -->
+                        <div class="dropdown">
+                            <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                <img t-att-src="'/web/image/res.users/' + str(request.env.user.id) + '/image_128'"
+                                        alt="User Avatar"
+                                        class="rounded-circle me-2"
+                                        width="32"
+                                        height="32"
+                                        onerror="this.style.display='none'"/>
+                                <div class="d-flex flex-column align-items-start">
+                                    <span class="fw-bold" t-esc="request.env.user.name"/>
+                                    <t t-set="company" t-value="request.env['energy.company'].sudo().search([('user_id', '=', request.env.user.id)], limit=1)"/>
+                                    <span class="small text-muted" t-esc="company.company_name"/>
+                                </div>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end text-small">
+                                <li><a class="dropdown-item" href="/my/account">My Account</a></li>
+                                <li><a class="dropdown-item" href="/my/settings">Settings</a></li>
+                                <li><hr class="dropdown-divider"/></li>
+                                <li><a class="dropdown-item" href="/web/session/logout">Sign out</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            <!-- Custom Header End -->
+
+            <div class="bids-bg" style="padding-bottom: 25px;">
+                <div style="max-width: 1340px; margin: auto; padding: 0;">
+                <t t-raw="0"/>
+                </div>
+            </div>
+            <style>
+                .bids-bg{
+                    margin: 0px auto 0 auto !important;
+                    padding: 0px 20px 0 20px !important;
+                }
+                .arrow-animate-up {
+                    animation: arrowRise 1s ease-out;
+                }
+                .arrow-animate-down {
+                    animation: arrowDrop 1s ease-out;
+                }
+
+                @keyframes arrowRise {
+                    0%   { transform: translateY(5px); opacity: 0; }
+                    100% { transform: translateY(0); opacity: 1; }
+                }
+
+                @keyframes arrowDrop {
+                    0%   { transform: translateY(-5px); opacity: 0; }
+                    100% { transform: translateY(0); opacity: 1; }
+                }
+            </style>
+            </body>
+        </html>
+        </t>
+    </template>
+</odoo>

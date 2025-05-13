@@ -1,0 +1,15 @@
+<odoo>
+    <template id="leaflet_location_picker_assets" inherit_id="portal.frontend_layout" name="Leaflet Location Picker Assets">
+        <xpath expr="." position="inside">
+            <!-- Load Bootstrap -->
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+
+            <!-- Load Leaflet.js -->
+            <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"/>
+            <script type="text/javascript" src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"/>
+            
+            <!-- Your JS: should be plain script, not Odoo module -->
+            <script type="text/javascript" src="/energy_bids/static/src/js/leaflet_location_picker.js"/>
+        </xpath>
+    </template>
+</odoo>

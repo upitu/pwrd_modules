@@ -5,7 +5,7 @@ body {
     background-color: #F7F8FA;
     margin: 0;
     color: #0F172A;
-    overflow: hidden;
+    /* overflow: hidden; */
 }
 
 h4{
@@ -170,22 +170,24 @@ input.form-control {
     padding: 14px 18px;
     width: 100%;
     font-size: 15px;
+    height: 50px !important;
 }
 
 /* Button */
 .btn-primary {
     font-family: 'Urbanist', sans-serif !important;
-    background-color: #1E60FF;
-    color: white;
-    border: none;
-    border-radius: 12px;
-    padding: 12px 32px;
-    font-weight: 600;
-    font-size: 16px;
+    background-color: #1E60FF !important;
+    color: white !important;
+    border: solid 1px rgba(255, 255, 255, 0) !important;
+    border-radius: 12px !important;
+    padding: 12px 32px !important;
+    font-weight: 600 !important;
+    font-size: 16px !important;
 }
 .btn-primary:hover {
     font-family: 'Urbanist', sans-serif !important;
-    background-color: #174dcc;
+    color: #174dcc !important;
+    border: solid 1px #174dcc !important;
 }
 
 /* Bottom bar (login + continue) */
@@ -298,25 +300,42 @@ textarea.form-control:focus {
     font-family: 'Urbanist', sans-serif !important;
     outline: none;
     box-shadow: none;
-    border-color: #ccc; /* or any neutral border color */
+    border-color: #ccc;
     background-color: inherit;
 }
 
 select.form-control {
     font-family: 'Urbanist', sans-serif !important;
-    height: 50px;                 /* Match your input height */
-    padding: 12px 16px;           /* Match padding */
-    border-radius: 12px;          /* Match rounded corners */
-    font-size: 16px;              /* Match text */
-    appearance: none;             /* Optional: Remove default arrow for custom UI */
+    height: 50px !important;
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 16px;
+    appearance: none;
 }
 
 select.form-control {
     font-family: 'Urbanist', sans-serif !important;
-    background-image: url('/energy_bids/static/src/img/chevron-down.svg'); */
+    background-image: url('/energy_bids/static/src/img/chevron-down.svg') !important; 
     background-repeat: no-repeat;
     background-position: right 16px center;
     background-size: 16px;
+}
+
+.form-select{
+    height: 50px !important;
+    font-family: 'Urbanist', sans-serif !important;
+    background-image: url('/energy_bids/static/src/img/chevron-down.svg') !important; 
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    background-size: 16px;
+}
+
+.form-select:focus{
+    font-family: 'Urbanist', sans-serif !important;
+    outline: none;
+    box-shadow: none;
+    border-color: #ccc;
+    background-color: inherit;
 }
 
 .info_box{
@@ -418,9 +437,27 @@ select.form-control {
     align-items: center;
     padding: 0;
     transition: background 0.2s ease;
-  }
-  
-  .btn-bids-submit {
+    text-decoration: none !important;
+}
+
+.btn-bids-cancel:hover {
+    background-color: #F93C65;
+    color: #FFFFFF;
+    border: 1px solid #F93C65;
+    width: 150px;
+    height: 50px;
+    border-radius: 10px;
+    font-weight: 500;
+    font-size: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    transition: background 0.2s ease;
+    text-decoration: none !important;
+}
+
+.btn-bids-submit {
     font-family: 'Urbanist', sans-serif !important;
     background-color: #FFF;
     color: #1170F0;
@@ -435,16 +472,35 @@ select.form-control {
     align-items: center;
     padding: 0;
     transition: background 0.2s ease;
-  }
-  
-  .btn-bids-cancel.disabled {
+    text-decoration: none !important;
+}
+
+.btn-bids-submit:hover {
+    font-family: 'Urbanist', sans-serif !important;
+    background-color: #1170F0;
+    color: #FFFFFF;
+    border: 1px solid #1170F0;
+    width: 150px;
+    height: 50px;
+    border-radius: 10px;
+    font-weight: 500;
+    font-size: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    transition: background 0.2s ease;
+    text-decoration: none !important;
+}
+
+.btn-bids-cancel.disabled {
     font-family: 'Urbanist', sans-serif !important;
     opacity: 0.5;
     border-style: dashed;
     cursor: not-allowed;
     color: #F93C65;
     border-color: #F93C65;
-  }
+}
 
 .btn-cancel-bids {
     font-family: 'Urbanist', sans-serif !important;
@@ -460,4 +516,143 @@ select.form-control {
     align-items: center;
     text-align: center;
     padding: 0;
-  }
+    text-decoration: none !important;
+}
+
+.btn-create-request {
+    font-family: 'Urbanist', sans-serif !important;
+    background-color: #1170F0;
+    color: #FFFFFF;
+    border: 1px solid #1170F0;
+    width: 150px;
+    height: 50px;
+    border-radius: 10px;
+    font-weight: 500;
+    font-size: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    transition: background 0.2s ease;
+    text-decoration: none !important;
+}
+
+.btn-create-request:hover {
+    font-family: 'Urbanist', sans-serif !important;
+    background-color: #FFFFFF;
+    color: #1170F0;
+    border: 1px solid #1170F0;
+    width: 150px;
+    height: 50px;
+    border-radius: 10px;
+    font-weight: 500;
+    font-size: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    transition: background 0.2s ease;
+    text-decoration: none !important;
+}
+
+/* .custom-header{
+    
+} */
+
+.custom-header .nav-link {
+    color: #707070 !important; /* subtle gray */
+    font-weight: 400;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    background-color: transparent;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    height: 50px;
+    line-height: 42px;
+}
+
+.custom-header .nav-link.active {
+    background-color: #fff !important;
+    color: #4C4C4C !important;
+    font-weight: 600;
+}
+
+.custom-portal .nav-link {
+    color: #666;
+    border-radius: 8px;
+}
+
+.custom-portal .nav-link.bg-white {
+    color: #000;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+}
+
+.card.round-border-20{
+    border-radius: 20px !important;
+}
+
+.ul-locations{
+    list-style-type: none;
+}
+
+.li-locations{
+    border-bottom: solid 1px rgba(67, 121, 238, 0.1);
+    height: 44px;
+    align-content: center;
+}
+
+.performance-title{
+    font-size: 14px;
+    text-align: left;
+    color: #202224;
+}
+
+.btn-bids-view{
+    font-family: 'Urbanist', sans-serif !important;
+    background-color: #FFF;
+    color: #00B69B;
+    border: 1px solid #00B69B;
+    width: 150px;
+    height: 50px;
+    border-radius: 10px;
+    font-weight: 500;
+    font-size: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    transition: background 0.2s ease;
+    text-decoration: none !important;
+}
+
+.btn-bids-view:hover{
+    background-color: #00B69B;
+    color: #FFF;
+    border: 1px solid #00B69B;
+    transition: background 0.2s ease;
+    text-decoration: none !important;
+}
+
+.bid-approval-table{
+    background: #FFFFFF;
+    border-radius: 20px;
+}
+
+.bid-approval-table table thead tr{
+    vertical-align: middle;
+}
+
+.bid-approval-table table tbody tr{
+    vertical-align: middle;
+}
+
+.bid-approval-table table td {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    border-left: none;
+    border-right: none;
+}
+
+.btn-bids-view:disabled{
+    opacity: var(--btn-disabled-opacity);
+    pointer-events: none;
+}

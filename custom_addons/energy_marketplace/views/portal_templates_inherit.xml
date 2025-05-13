@@ -1,61 +1,75 @@
 <odoo>
     <template id="custom_portal_frontend_layout_inherit" inherit_id="portal.frontend_layout" priority="16">
 
-        <!-- Remove the footer -->
-        <xpath expr="//footer" position="replace"/>
-
-        <!-- Replace the header with a custom one -->
+        <!-- Conditionally replace the header -->
         <xpath expr="//header" position="replace">
-            <header class="custom-portal-header p-3" style="background-color: #F2F2F2 !important;">
-                <div class="container">
-                    <div class="row align-items-center">
-                        <!-- Logo -->
-                        <div class="col-auto">
-                            <a href="/my/home">
-                            <img src="/energy_marketplace/static/src/img/logo_small.svg" alt="PWRD Dashboard" style="height: 40px;"/>
-                            </a>
-                        </div>
+            <t t-if="'/marketplace' in request.httprequest.path">
+                <header class="custom-portal-header p-3" style="background-color: #F2F2F2 !important;">
+                    <div class="container">
+                        <div class="row align-items-center">
+                            <!-- Logo -->
+                            <div class="col-auto">
+                                <a href="/my/home">
+                                    <img src="/energy_marketplace/static/src/img/logo_small.svg" alt="PWRD Dashboard" style="height: 40px;"/>
+                                </a>
+                            </div>
 
-                        <!-- Navigation -->
-                        <div class="col text-center">
-                            <nav class="nav nav-pills gap-3 justify-content-center">
-                                <a class="nav-link px-3 py-1 rounded t-esc-class"
+                            <!-- Navigation -->
+                            <div class="col text-center">
+                                <nav class="nav nav-pills gap-3 justify-content-center">
+                                    <a class="nav-link px-3 py-1 rounded"
                                     t-attf-class="nav-link px-3 py-1 rounded {{ 'bg-white fw-bold' if request.httprequest.path == '/my/home' else 'text-muted' }}"
                                     href="/my/home">Dashboard</a>
-                                <a class="nav-link px-3 py-1 rounded"
-                                    t-attf-class="nav-link px-3 py-1 rounded {{ 'bg-white fw-bold' if request.httprequest.path == '/marketplace' else 'text-muted' }}"
-                                    href="/marketplace">Marketplace</a>
-                                <a class="nav-link px-3 py-1 rounded"
-                                    t-attf-class="nav-link px-3 py-1 rounded {{ 'bg-white fw-bold' if request.httprequest.path == '/my/bids' else 'text-muted' }}"
-                                    href="/my/bids">My Bids</a>
-                            </nav>
-                        </div>
 
-                        <!-- Sign-in info -->
-                        <div class="dropdown">
-                            <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                <img t-att-src="'/web/image/res.users/' + str(request.env.user.id) + '/image_128'"
-                                    alt="User Avatar"
-                                    class="rounded-circle me-2"
-                                    width="32"
-                                    height="32"
-                                    onerror="this.style.display='none'"/>
-                                <div class="d-flex flex-column align-items-start">
-                                <span class="fw-bold" t-esc="request.env.user.name"/>
-                                <t t-set="company" t-value="request.env['energy.company'].sudo().search([('user_id', '=', request.env.user.id)], limit=1)"/>
-                                <span class="small text-muted" t-esc="company.company_name"/>
-                                </div>
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end text-small">
-                                <li><a class="dropdown-item" href="/my/account">My Account</a></li>
-                                <li><a class="dropdown-item" href="/my/settings">Settings</a></li>
-                                <li><hr class="dropdown-divider"/></li>
-                                <li><a class="dropdown-item" href="/web/session/logout">Sign out</a></li>
-                            </ul>
+                                    <a class="nav-link px-3 py-1 rounded"
+                                    t-attf-class="nav-link px-3 py-1 rounded {{ 'bg-white fw-bold' if request.httprequest.path == '/bids/marketplace' else 'text-muted' }}"
+                                    href="/bids/marketplace">Marketplace</a>
+
+                                    <t t-if="request.env.user.user_type == 'company'">
+                                        <a class="nav-link px-3 py-1 rounded"
+                                        t-attf-class="nav-link px-3 py-1 rounded {{ 'bg-white fw-bold' if request.httprequest.path == '/my/bids' else 'text-muted' }}"
+                                        href="/my/bids">My Bids</a>
+                                    </t>
+
+                                    <t t-if="request.env.user.user_type == 'supplier'">
+                                        <a class="nav-link px-3 py-1 rounded"
+                                        t-attf-class="nav-link px-3 py-1 rounded {{ 'bg-white fw-bold' if request.httprequest.path == '/my/supplier-bids' else 'text-muted' }}"
+                                        href="/my/supplier-bids">My Bids</a>
+                                    </t>
+                                </nav>
+                            </div>
+
+                            <!-- Sign-in info -->
+                            <div class="dropdown">
+                                <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <img t-att-src="'/web/image/res.users/' + str(request.env.user.id) + '/image_128'"
+                                            alt="User Avatar"
+                                            class="rounded-circle me-2"
+                                            width="32"
+                                            height="32"
+                                            onerror="this.style.display='none'"/>
+                                    <div class="d-flex flex-column align-items-start">
+                                        <span class="fw-bold" t-esc="request.env.user.name"/>
+                                        <t t-set="company" t-value="request.env['energy.company'].sudo().search([('user_id', '=', request.env.user.id)], limit=1)"/>
+                                        <span class="small text-muted" t-esc="company.company_name"/>
+                                    </div>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end text-small">
+                                    <li><a class="dropdown-item" href="/my/account">My Account</a></li>
+                                    <li><a class="dropdown-item" href="/my/settings">Settings</a></li>
+                                    <li><hr class="dropdown-divider"/></li>
+                                    <li><a class="dropdown-item" href="/web/session/logout">Sign out</a></li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </header>
+                </header>
+            </t>
+        </xpath>
+
+        <!-- Conditionally remove the footer only for custom pages -->
+        <xpath expr="//footer" position="replace">
+            <t t-if="'/marketplace' in request.httprequest.path"/>
         </xpath>
 
     </template>

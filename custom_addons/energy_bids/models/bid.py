@@ -6,10 +6,9 @@ class EnergyBid(models.Model):
     _order = 'create_date desc'
 
     company_id = fields.Many2one('energy.company', string="Company", required=True, ondelete='cascade')
-
     real_company_id = fields.Many2one('res.company', compute='_compute_real_company_id', store=False)
-
     supplier_bid_ids = fields.One2many('supplier.bid', 'bid_id', string="Supplier Submissions")
+    location_link = fields.Char(string="Location Link")
     
     @api.depends('company_id')
     def _compute_real_company_id(self):

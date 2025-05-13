@@ -7,8 +7,77 @@
         <head>
           <t t-call-assets="web.assets_frontend"/>
           <t t-set="title">Bids - PWRD</t>
+          <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"/>
+          <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         </head>
         <body class="bg-light" style="margin: 0;">
+            <!-- Custom Header Start -->
+            <header class="custom-header p-3">
+              <div class="container">
+                  <div class="row align-items-center">
+                      <!-- Logo -->
+                      <div class="col-auto">
+                          <a href="/my/home">
+                              <img src="/energy_bids/static/src/img/logo_small.svg" alt="PWRD Dashboard" style="height: 40px;"/>
+                          </a>
+                      </div>
+
+                      <!-- Navigation -->
+                      <div class="col text-center">
+                          <nav class="nav nav-pills gap-3 justify-content-center">
+                              <a class="nav-link px-3 py-1 rounded"
+                              t-attf-class="nav-link px-3 py-1 rounded {{ 'bg-white fw-bold' if request.httprequest.path == '/my/home' else 'text-muted' }}"
+                              href="/my/home">Dashboard</a>
+
+                              <a class="nav-link px-3 py-1 rounded"
+                              t-attf-class="nav-link px-3 py-1 rounded {{ 'bg-white fw-bold' if request.httprequest.path == '/bids/marketplace' else 'text-muted' }}"
+                              href="/bids/marketplace">Marketplace</a>
+
+                              <a class="nav-link px-3 py-1 rounded"
+                                t-attf-class="nav-link px-3 py-1 rounded {{ 'bg-white fw-bold' if request.httprequest.path == '/my/performance' else 'text-muted' }}"
+                                href="/my/performance">Performance</a>
+
+                              <t t-if="request.env.user.user_type == 'company'">
+                                  <a class="nav-link px-3 py-1 rounded"
+                                    t-attf-class="nav-link px-3 py-1 rounded {{ 'bg-white fw-bold' if request.httprequest.path.startswith('/my/bids') else 'text-muted' }}"
+                                    href="/my/bids">My Bids</a>
+                              </t>
+
+                              <t t-if="request.env.user.user_type == 'supplier'">
+                                  <a class="nav-link px-3 py-1 rounded"
+                                  t-attf-class="nav-link px-3 py-1 rounded {{ 'bg-white fw-bold' if request.httprequest.path == '/my/supplier-bids' else 'text-muted' }}"
+                                  href="/my/supplier-bids">My Bids</a>
+                              </t>
+                          </nav>
+                      </div>
+
+                      <!-- Sign-in info -->
+                      <div class="dropdown">
+                          <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                              <img t-att-src="'/web/image/res.users/' + str(request.env.user.id) + '/image_128'"
+                                      alt="User Avatar"
+                                      class="rounded-circle me-2"
+                                      width="32"
+                                      height="32"
+                                      onerror="this.style.display='none'"/>
+                              <div class="d-flex flex-column align-items-start">
+                                  <span class="fw-bold" t-esc="request.env.user.name"/>
+                                  <t t-set="company" t-value="request.env['energy.company'].sudo().search([('user_id', '=', request.env.user.id)], limit=1)"/>
+                                  <span class="small text-muted" t-esc="company.company_name"/>
+                              </div>
+                          </a>
+                          <ul class="dropdown-menu dropdown-menu-end text-small">
+                              <li><a class="dropdown-item" href="/my/account">My Account</a></li>
+                              <li><a class="dropdown-item" href="/my/settings">Settings</a></li>
+                              <li><hr class="dropdown-divider"/></li>
+                              <li><a class="dropdown-item" href="/web/session/logout">Sign out</a></li>
+                          </ul>
+                      </div>
+                  </div>
+              </div>
+          </header>
+          <!-- Custom Header End -->
+
           <div class="bids-bg" style="padding-bottom: 25px;">
             <div style="max-width: 1340px; margin: auto; padding: 0;">
               <t t-raw="0"/>
@@ -49,10 +118,62 @@
           </div>
         </t>
         <t t-if="bids">
-          <h4>My Requests</h4>
+          <div class="d-flex" style="justify-content: space-between;vertical-align: middle;">
+              <h4>My Requests</h4>
+              <a class="btn-create-request" href="/my/bids/create">Create Request</a>
+          </div>
           <t t-call="energy_bids.portal_bids_list"/>
         </t>
       </div>
+      <div class="modal fade" id="bidDetailsModal" tabindex="-1" aria-hidden="true">
+        <div class="custom-modal modal-dialog modal-lg modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-body" id="bid-details-content">
+              <div class="text-center py-5">
+                <span class="spinner-border text-primary"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"/>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+      <style>
+          .text-xs {
+              font-size: 0.75rem;
+          }
+
+          .custom-modal {
+              max-width: 40rem !important;
+          }
+      </style>
+      <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            // 🔍 Modal 1 — Bid Details
+            const bidDetailsModal = document.getElementById('bidDetailsModal');
+            const bidDetailsContent = bidDetailsModal?.querySelector('#bid-details-content');
+
+            if (bidDetailsModal &amp;&amp; bidDetailsContent) {
+                bidDetailsModal.addEventListener('show.bs.modal', function (event) {
+                    const trigger = event.relatedTarget;
+                    const url = trigger?.getAttribute('data-url');
+                    if (!url) return;
+
+                    bidDetailsContent.innerHTML = '<div class="text-center py-5"><span class="spinner-border text-primary"></span></div>';
+
+                    fetch(url)
+                        .then(res => res.text())
+                        .then(html => {
+                            bidDetailsContent.innerHTML = html;
+                        })
+                        .catch(err => {
+                            bidDetailsContent.innerHTML = '<div class="alert alert-danger">Failed to load bid details.</div>';
+                            console.error(err);
+                        });
+                });
+            }
+        });
+      </script>
     </t>
   </template>
 
@@ -61,7 +182,7 @@
     <div class="container py-5">
       <div class="card-create-bid px-4 py-5" style="max-width: 1340px; margin: auto; margin-top: 2rem;">
         <div class="table-responsive">
-          <table class="table table-hover align-middle">
+          <table class="table align-middle">
             <thead class="thead-top">
               <tr>
                 <th class="th-top">Energy Type</th>
@@ -78,16 +199,16 @@
                 <tr>
                   <td class="th-body"><t t-esc="bid.energy_type"/></td>
                   <td class="th-body"><t t-esc="bid.volume_requested"/> L</td>
-                  <td class="th-body"><t t-esc="bid.location"/></td>
+                  <td class="th-body"><t t-esc="bid.location.name"/></td>
                   <td class="th-body"><t t-esc="bid.payment_type"/></td>
-                  <td class="th-body"><t t-esc="bid.supply_date.strftime('%Y-%m-%d')"/></td>
+                  <td class="th-body"><t t-esc="bid.supply_date.strftime('%d-%m-%Y')"/></td>
                   <td class="th-body">
                     <span t-if="bid.status == 'pending'" class="badge bg-warning text-dark">Pending</span>
                     <span t-if="bid.status == 'delivered'" class="badge bg-success">Delivered</span>
                     <span t-if="bid.status == 'rejected'" class="badge bg-danger">Rejected</span>
                     <span t-if="bid.status == 'cancelled'" class="badge bg-secondary">Cancelled</span>
                   </td>
-                  <td class="text-end d-flex justify-content-end gap-2">
+                  <td class="text-end d-flex justify-content-end gap-2" style="margin-bottom:-1px">
                     <t t-if="bid.status == 'pending'">
                       <a t-att-href="'/my/bids/%s/cancel' % bid.id" class="btn-bids-cancel">Cancel Request</a>
                     </t>
@@ -97,7 +218,14 @@
                     <t t-elif="bid.status == 'cancelled'">
                       <a class="btn-bids-cancel disabled" style="pointer-events: none;">Cancel Request</a>
                     </t>
-                    <a t-att-href="'/my/bids/%s' % bid.id" class="btn-bids-submit">View</a>
+                    <a href="#" class="btn-bids-submit"
+                      t-att-data-bid-id="bid.id"
+                      data-bs-toggle="modal"
+                      data-bs-target="#bidDetailsModal"
+                      t-attf-data-url="/bids/#{bid.id}?modal=1">
+                      View
+                    </a>
+                    <a class="btn-bids-view" t-att-href="'/my/bids/view/%s' % bid.id" >View Bids</a>
                   </td>
                 </tr>
               </t>
@@ -110,72 +238,125 @@
 
   <!-- Bid Creation -->
   <template id="portal_bids_create" name="Create Bid">
-    <t t-call="energy_bids.bids_layout">
-      <div class="container py-5">
-        <div class="px-4 py-5" style="max-width: 1340px; margin: auto;">
-          <h4>New Request</h4>
-            <div class="card-create-bid">
-  <h4 class="mb-3">Fill in the form</h4>
-  <p class="text-muted mb-4">Provide the necessary details to create a new request.</p>
+    <t t-call="portal.frontend_layout">
+      <t t-call="energy_bids.bids_layout">
+        <div class="container py-5">
+          <div class="px-4 py-5" style="max-width: 1340px; margin: auto;">
+            <h4>New Request</h4>
+              <div class="card-create-bid">
+              <h4 class="mb-3">Fill in the form</h4>
+              <p class="text-muted mb-4">Provide the necessary details to create a new request.</p>
 
-  <form method="POST" action="/my/bids/create">
-    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+              <form method="POST" action="/my/bids/create">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
 
-    <div class="row g-4">
-      <!-- Left Column -->
-      <div class="col-md-6">
-        <label class="form-label">Energy Type</label>
-        <select name="energy_type" class="form-control" required="1">
-          <option value="diesel">Diesel</option>
-          <option value="petrol">Petrol</option>
-          <option value="gas">Natural Gas</option>
-        </select>
+                <div class="row g-4">
+                  <!-- Left Column -->
+                    <div class="row g-3">
+                      <div class="col-12 col-md-4">
+                        <label class="form-label">Energy Type</label>
+                        <select name="energy_type" class="form-control" required="1">
+                          <option value="diesel">Diesel</option>
+                          <!-- <option value="petrol">Petrol</option>
+                          <option value="gas">Natural Gas</option> -->
+                        </select>
+                      </div>
 
-        <label class="form-label mt-3">Location</label>
-        <input type="text" name="location" placeholder="Location" class="form-control" required="1"/>
+                      <div class="col-12 col-md-4">
+                        <label class="form-label">Location</label>
+                        <div class="input-group">
+                          <input type="text" name="location_link" id="location_link" class="form-control" placeholder="Pin your location" readonly="1" required="1"/>
+                          <button id="open-map-btn" type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#mapModal">📍 Pick Location</button>
+                        </div>
+                      </div>
+                    </div>
 
-        <label class="form-label mt-3">Supply Date</label>
-        <input type="date" name="supply_date" class="form-control" required="1"/>
+                    <div class="row g-3 mt-2">
+                      <div class="col-12 col-md-4">
+                        <label class="form-label">Detected Emirate</label>
+                        <select name="location_name" id="emirate_select" class="form-select" required="1">
+                          <option value="">Emirate</option>
+                          <option value="548">Abu Dhabi</option>
+                          <option value="549">Dubai</option>
+                          <option value="550">Sharjah</option>
+                          <option value="551">Ajman</option>
+                          <option value="552">Umm Al Quwain</option>
+                          <option value="553">Ras Al Khaimah</option>
+                          <option value="554">Fujairah</option>
+                        </select>
+                        <input type="hidden" name="location_id" id="location_id" required="1"/>
+                      </div>
 
-        <label class="form-label mt-3">Frequency</label>
-        <select name="frequency" class="form-control" required="1">
-          <option value="once">One-Time</option>
-          <option value="weekly">Weekly</option>
-          <option value="monthly">Monthly</option>
-        </select>
-      </div>
+                      <div class="col-12 col-md-4">
+                        <label class="form-label">Supply Date</label>
+                        <input type="date" name="supply_date" class="form-control" required="1"/>
+                      </div>
+                    </div>
 
-      <!-- Right Column -->
-      <div class="col-md-6">
-        <label class="form-label">Volume Requested</label>
-        <input type="text" name="volume_requested" placeholder="Volume (L)" class="form-control" required="1"/>
+                    <div class="row g-3 mt-2">
+                      <div class="col-12 col-md-4">
+                        <label class="form-label">Frequency</label>
+                        <select name="frequency" class="form-control" required="1">
+                          <option value="once">One-Time</option>
+                          <option value="weekly">Weekly</option>
+                          <option value="monthly">Monthly</option>
+                        </select>
+                      </div>
 
-        <label class="form-label mt-3">Payment Type</label>
-        <select name="payment_type" class="form-control" required="1">
-          <option value="cash">Cash</option>
-          <option value="card">Card</option>
-          <option value="cheque">Cheque</option>
-          <option value="bank_transfer">Bank Transfer</option>
-        </select>
+                      <div class="col-12 col-md-4">
+                        <label class="form-label">Volume Requested</label>
+                        <input type="text" name="volume_requested" placeholder="Volume (L)" class="form-control" required="1"/>
+                      </div>
+                    </div>
 
-        <label class="form-label mt-3">Preferred Hours</label>
-        <select name="preferred_hours" class="form-control" required="1">
-          <option value="morning">8 AM – 12 PM</option>
-          <option value="afternoon">12 PM – 5 PM</option>
-          <option value="evening">5 PM – 9 PM</option>
-        </select>
-      </div>
-    </div>
+                    <div class="row g-3 mt-2">
+                      <div class="col-12 col-md-4">
+                        <label class="form-label">Payment Type</label>
+                        <select name="payment_type" class="form-control" required="1">
+                          <option value="cash">Cash</option>
+                          <option value="card">Card</option>
+                          <option value="cheque">Cheque</option>
+                          <option value="bank_transfer">Bank Transfer</option>
+                        </select>
+                      </div>
 
-    <!-- Bottom Buttons -->
-    <div class="d-flex justify-content-between mt-5">
-      <a href="/my/bids" class="btn-cancel-bids">Cancel</a>
-      <button type="submit" class="btn-continue">Create</button>
-    </div>
-  </form>
-</div>
+                      <div class="col-12 col-md-4">
+                        <label class="form-label">Preferred Hours</label>
+                        <select name="preferred_hours" class="form-control" required="1">
+                          <option value="morning">8 AM – 12 PM</option>
+                          <option value="afternoon">12 PM – 5 PM</option>
+                          <option value="evening">5 PM – 9 PM</option>
+                        </select>
+                      </div>
+                    </div>
+                </div>
+
+                <!-- Bottom Buttons -->
+                <div class="d-flex justify-content-between mt-5">
+                  <a href="/my/bids" class="btn-cancel-bids">Cancel</a>
+                  <button type="submit" class="btn-continue">Create</button>
+                </div>
+              </form>
+            </div>
+          </div>
         </div>
-      </div>
+        
+        <!-- Map Modal -->
+        <div class="modal fade" id="mapModal" tabindex="-1" aria-hidden="true">
+          <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Select Delivery Location</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <div id="leafletMap" style="height: 400px;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <t t-raw="0"/>
+      </t>
     </t>
   </template>
 
@@ -198,5 +379,164 @@
       <a href="/my/bids" class="btn btn-secondary mt-3">Back to My Requests</a>
     </div>
   </template>
+
+  <!-- Bids Approval -->
+  <template id="portal_company_bid_view_template" name="View Bid Detail">
+  <t t-call="energy_bids.bids_layout">
+    <div class="container py-4">
+      <h3>Bid Request Details</h3>
+      <div class="row col-md-4 bid-approval-table">
+        <table class="table">
+          <tr><th>Energy Type</th><td t-esc="bid.energy_type"/></tr>
+          <tr><th>Volume</th><td t-esc="str(bid.volume_requested) + ' L'"/></tr>
+          <tr><th>Location</th><td t-esc="bid.location.name"/></tr>
+          <tr><th>Supply Date</th><td t-esc="bid.supply_date.strftime('%d-%m-%Y')"/></tr>
+        </table>
+      </div>
+
+      <h4 class="mt-4">Supplier Offers</h4>
+      <div class="row col-md-12 bid-approval-table">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Supplier</th>
+              <th>Price</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <t t-foreach="supplier_bids" t-as="sb">
+              <tr>
+                <td>
+                  <div class="d-flex align-items-center gap-2">
+                    <img t-att-src="'/web/image/res.partner/' + str(sb.supplier_id.partner_id.id) + '/image_128'"
+                          class="rounded-circle"
+                          alt="avatar"
+                          width="32"
+                          height="32"
+                          onerror="this.style.display='none'"/>
+                    <span t-esc="sb.supplier_id.name"/>
+                  </div>
+                </td>
+                <td t-esc="'AED%.2f' % sb.amount"/>
+                <td>
+                  <span t-if="sb.status == 'approved'" class="badge bg-success">Approved</span>
+                  <span t-elif="sb.status == 'rejected'" class="badge bg-danger">Rejected</span>
+                  <span t-else="" class="badge bg-warning text-dark">Pending</span>
+                </td>
+                <td class="text-end d-flex justify-content-end gap-2">
+                  <t t-if="sb.status == 'submitted'">
+                      <button type="button" class="btn-bids-view"
+                              t-att-data-id="sb.id"
+                              data-bs-toggle="modal"
+                              data-bs-target="#approvalModal">
+                        Chat
+                      </button>
+                      <button type="button" class="btn btn-primary btn-sm approve-btn"
+                              t-att-data-id="sb.id"
+                              data-bs-toggle="modal"
+                              data-bs-target="#approvalModal">
+                        Approve
+                      </button>
+                    </t>
+                    <t it-if="sb.status != 'submitted'">
+                      <button type="button" class="btn-bids-view"
+                            disabled="disabled"
+                            t-att-data-id="sb.id"
+                            data-bs-toggle="modal"
+                            data-bs-target="#approvalModal">
+                        Chat
+                      </button>
+                      <button type="button" class="btn btn-primary btn-sm approve-btn"
+                              disabled="disabled"
+                              t-att-data-id="sb.id"
+                              data-bs-toggle="modal"
+                              data-bs-target="#approvalModal">
+                        Approve
+                      </button>
+                  </t>
+                </td>
+              </tr>
+            </t>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Approval Modal -->
+    <div class="modal fade" id="approvalModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content p-4">
+          <div class="modal-header">
+            <h5 class="modal-title">Approve This Bid?</h5>
+          </div>
+          <div class="modal-body">
+            <p>Are you sure you want to approve this supplier bid? All others will be rejected.</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-success" id="confirmApprove">Confirm</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999">
+      <div id="approveToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+          <div class="toast-body">
+            Supplier bid approved successfully!
+          </div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let selectedBidId = null;
+
+      document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.approve-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            selectedBidId = btn.getAttribute('data-id');
+          });
+        });
+
+        document.getElementById('confirmApprove').addEventListener('click', () => {
+          if (selectedBidId) {
+            fetch(`/my/bids/${selectedBidId}/approve`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({})
+            })
+            .then(res => res.json())
+            .then(data => {
+              if (data.success) {
+                const toastEl = document.getElementById('approveToast');
+                const toast = new bootstrap.Toast(toastEl);
+                toast.show();
+
+                // Disable all approve buttons
+                document.querySelectorAll('.approve-btn').forEach(btn => {
+                  btn.disabled = true;
+                  btn.classList.add('disabled');
+                });
+
+                // Hide modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('approvalModal'));
+                modal.hide();
+
+                // Optionally update UI status text (or reload if needed)
+                setTimeout(() => window.location.reload(), 1500);
+              }
+            });
+          }
+        });
+      });
+    </script>
+  </t>
+</template>
 
 </odoo>
